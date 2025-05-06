@@ -1,0 +1,15 @@
+{
+    "/js/bootstrap.js": "/js/bootstrap.js",
+    "/js/lang-loader.js": "/js/lang-loader.js",
+    "/js/app.js": "/js/app.js",
+    "/js/dashboard.js": "/js/dashboard.js",
+    "/js/cashier.js": "/js/cashier.js",
+    "/js/update.js": "/js/update.js",
+    "/js/pos-init.js": "/js/pos-init.js",
+    "/js/pos.js": "/js/pos.js",
+    "/js/auth.js": "/js/auth.js",
+    "/js/setup.js": "/js/setup.js",
+    "/js/popups.js": "/js/popups.js",
+    "/js/manifest.js": "/js/manifest.js",
+    "/js/vendor.js": "/js/vendor.js"
+}

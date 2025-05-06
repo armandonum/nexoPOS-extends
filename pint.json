@@ -1,0 +1,32 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "modules"
+    ],
+    "rules": {
+        "phpdoc_align": {
+            "align" : "vertical"
+        },
+        "cast_spaces": {
+            "space": "single"
+        },
+        "spaces_inside_parentheses": {
+            "space": "single"
+        },
+        "function_declaration": false,
+        "trim_array_spaces": false,
+        "no_spaces_around_offset": {
+            "positions": ["outside"]
+        },
+        "no_unneeded_curly_braces": {
+            "namespaces": false
+        },
+        "concat_space": {
+            "spacing": "one"
+        },
+        "new_with_braces": {
+            "anonymous_class": false,
+            "named_class": false
+        }
+    }
+}
