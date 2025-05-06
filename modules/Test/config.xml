@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<module>
+    <namespace>Test</namespace>
+    <version>1.0</version>
+    <author>armando</author>
+    <name>test</name>
+    <description>esto es de test</description>
+</module>
