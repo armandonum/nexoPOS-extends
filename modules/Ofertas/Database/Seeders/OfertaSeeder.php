@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Oferta as ModelsOferta;
+use Modules\Ofertas\Models\Oferta;
+// use App\Models\Oferta as ModelsOferta;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Modules\Ofertas\Models\Oferta;
 // use App\Models\Oferta;
 
 class OfertaSeeder extends Seeder
