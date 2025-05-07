@@ -8,3 +8,9 @@ Route::get('dashboard/Ofertas', [MiModuloController::class, 'index']);
 Route::get('/ofertas/crear', [MiModuloController::class, 'formularioCrear'])->name('ofertas.crear');
 
 Route::post('/ofertas/guardar-seleccion', [MiModuloController::class, 'guardarSeleccion'])->name('ofertas.guardarSeleccion');
+
+
+
+Route::get('/ofertas/seleccionados', [MiModuloController::class, 'mostrarSeleccionados'])->name('ofertas.mostrarSeleccionados');
+Route::post('/ofertas/guardar-redirigir', [MiModuloController::class, 'guardarYRedirigir'])->name('ofertas.guardarYRedirigir');
+

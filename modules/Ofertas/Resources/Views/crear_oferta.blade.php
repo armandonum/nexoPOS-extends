@@ -11,7 +11,7 @@
             <div class="card-body">
                 <p class="text-muted mb-4">Selecciona los productos que deseas incluir en la oferta.</p>
                 
-                <form method="POST" action="{{ route('ofertas.guardarSeleccion') }}">
+                <form method="POST" action="{{ route('ofertas.guardarYRedirigir') }}">
                     @csrf
                     <div class="table-responsive">
                         <table class="table table-striped table-hover align-middle">
