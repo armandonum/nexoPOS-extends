@@ -376,4 +376,10 @@ class Product extends NsModel
     {
         return $query->where( 'searchable', $attribute );
     }
+
+    public function ofertas()
+    {
+        return $this->belongsToMany(Oferta::class, 'ofertas_productos', 'producto_id', 'oferta_id');
+    }
+    
 }

@@ -136,5 +136,6 @@ if ( Auth::check() ) {
         @include( 'common.dashboard-footer' )
         @vite([ 'resources/ts/app.ts' ])
     @show
+    @stack('scripts')
 </body>
 </html>

@@ -77,5 +77,6 @@ if ( Auth::check() && Auth::user()->attribute instanceof UserAttribute ) {
     @section( 'layout.base.footer' )
         @include( 'common.footer' )
     @show
+    @stack('scripts')
 </body>
 </html>
