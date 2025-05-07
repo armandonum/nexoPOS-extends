@@ -53,4 +53,42 @@ class MiModuloController extends Controller
             'selected_products' => $this->selectedProducts
         ]);
     }
+
+
+
+
+
+
+
+    
+    public function mostrarSeleccionados()
+    {
+        $productIds = session('selected_products', []);
+        
+        if (empty($productIds)) {
+            return redirect()->route('ofertas.crear')->with('error', 'No hay productos seleccionados.');
+        }
+    
+        $todosProductos = collect(self::obtenerProductos());
+        $productosSeleccionados = $todosProductos->whereIn('id', $productIds);
+        
+        return view('Ofertas::mostrar_seleccionados', [
+            'title' => 'Productos Seleccionados',
+            'description' => 'Listado de productos incluidos en la oferta',
+            'selectedProducts' => $productosSeleccionados
+        ]);
+    }
+    
+    public function guardarYRedirigir()
+{
+    $productIds = request()->input('product_ids', []);
+
+    if (empty($productIds)) {
+        return redirect()->back()->with('error', 'No se seleccionaron productos.');
+    }
+
+    session()->put('selected_products', $productIds);
+
+    return redirect()->route('ofertas.mostrarSeleccionados');
+}
 }
