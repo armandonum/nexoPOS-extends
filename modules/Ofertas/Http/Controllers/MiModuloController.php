@@ -26,6 +26,8 @@ class MiModuloController extends Controller
     public function formularioCrear()
     {
         return view('Ofertas::crear_oferta', [
+            'title' => 'Crear Oferta',
+            'description' => 'Crear una nueva oferta',
             'products' => $this->obtenerProductos()
         ]);
     }
