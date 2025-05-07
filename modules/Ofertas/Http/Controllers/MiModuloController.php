@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Ofertas Controller
- * @since 1.0
- * @package modules/Ofertas
-**/
 
 namespace Modules\Ofertas\Http\Controllers;
 use Illuminate\Support\Facades\View;
@@ -31,8 +26,6 @@ class MiModuloController extends Controller
     public function formularioCrear()
     {
         return view('Ofertas::crear_oferta', [
-            'title' => 'Crear Oferta',
-            'description' => 'Crear una nueva oferta',
             'products' => $this->obtenerProductos()
         ]);
     }
@@ -44,10 +37,18 @@ class MiModuloController extends Controller
 
     public function guardarSeleccion()
     {
-        $data = request()->json()->all();
-        $productIds = $data['product_ids'] ?? [];
+        $productIds = request()->input('product_ids', []);
+
+        if (empty($productIds)) {
+            return response()->json(['error' => 'No se seleccionaron productos.'], 400);
+        }
+
         $this->selectedProducts = array_merge($this->selectedProducts, $productIds);
         session()->put('selected_products', $this->selectedProducts);
-        return response()->json(['success' => true]);
+
+        return response()->json([
+            'success' => true,
+            'selected_products' => $this->selectedProducts
+        ]);
     }
 }
