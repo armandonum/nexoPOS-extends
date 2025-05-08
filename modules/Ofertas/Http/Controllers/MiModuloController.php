@@ -1,7 +1,7 @@
 <?php
 
-
 namespace Modules\Ofertas\Http\Controllers;
+
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Dashboard\ProductsController;
@@ -25,16 +25,19 @@ class MiModuloController extends Controller
 
     public function formularioCrear()
     {
+        $selectedProducts = session()->get('selected_products', []);
         return view('Ofertas::crear_oferta', [
             'title' => 'Crear Oferta',
             'description' => 'Crear una nueva oferta',
-            'products' => $this->obtenerProductos()
+            'products' => $this->obtenerProductos(),
+            'selectedProducts' => $selectedProducts
         ]);
     }
 
-    public static function obtenerProductos() {
+    public static function obtenerProductos()
+    {
         $productos = app(ProductsController::class)->getProduts();
-        return $productos;
+        return $productos['data'] ?? $productos; // Ajusta según la respuesta real
     }
 
     public function guardarSeleccion()
