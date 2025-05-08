@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call( UnitGroupSeeder::class );
         $this->call( TaxSeeder::class );
         $this->call( ProductsSeeder::class );
+
     }
 }
