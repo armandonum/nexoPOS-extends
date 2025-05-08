@@ -11,10 +11,7 @@ worker.log
 *.log
 *.ignore.*
 *.log.*
-modules/*
-!modules/.temp
-modules/.temp/*
-!modules/index.html
+
 public/modules/*
 public/storage
 public/export/*

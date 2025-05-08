@@ -20,5 +20,6 @@ $theme  =   ns()->option->get( 'ns_default_theme', 'light' );
 </head>
 <body>
     @yield( 'layout.default.body' )
+    @stack('scripts')
 </body>
 </html>
