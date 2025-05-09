@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('oferta_productos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('oferta_id')->constrained('ofertas')->onDelete('cascade');
-            $table->foreignId('producto_id')->constrained('products')->onDelete('cascade');
+            $table->foreignId('producto_id')->constrained('nexopos_products')->onDelete('cascade');
             $table->timestamps();
         });
     }
