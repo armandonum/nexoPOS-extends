@@ -37,7 +37,7 @@ class MiModuloController extends Controller
     public static function obtenerProductos()
     {
         $productos = app(ProductsController::class)->getProduts();
-        return $productos['data'] ?? $productos; // Ajusta según la respuesta real
+        return $productos['data'] ?? $productos; 
     }
 
     public function guardarSeleccion()
@@ -58,40 +58,34 @@ class MiModuloController extends Controller
     }
 
 
-
-
-
-
-
-    
-    public function mostrarSeleccionados()
-    {
-        $productIds = session('selected_products', []);
+    // public function mostrarSeleccionados()
+    // {
+    //     $productIds = session('selected_products', []);
         
-        if (empty($productIds)) {
-            return redirect()->route('ofertas.crear')->with('error', 'No hay productos seleccionados.');
-        }
+    //     if (empty($productIds)) {
+    //         return redirect()->route('ofertas.crear')->with('error', 'No hay productos seleccionados.');
+    //     }
     
-        $todosProductos = collect(self::obtenerProductos());
-        $productosSeleccionados = $todosProductos->whereIn('id', $productIds);
+    //     $todosProductos = collect(self::obtenerProductos());
+    //     $productosSeleccionados = $todosProductos->whereIn('id', $productIds);
         
-        return view('Ofertas::mostrar_seleccionados', [
-            'title' => 'Productos Seleccionados',
-            'description' => 'Listado de productos incluidos en la oferta',
-            'selectedProducts' => $productosSeleccionados
-        ]);
-    }
+    //     return view('Ofertas::mostrar_seleccionados', [
+    //         'title' => 'Productos Seleccionados',
+    //         'description' => 'Listado de productos incluidos en la oferta',
+    //         'selectedProducts' => $productosSeleccionados
+    //     ]);
+    // }
     
-    public function guardarYRedirigir()
-{
-    $productIds = request()->input('product_ids', []);
+    // public function guardarYRedirigir()
+    // {
+    //     $productIds = request()->input('product_ids', []);
 
-    if (empty($productIds)) {
-        return redirect()->back()->with('error', 'No se seleccionaron productos.');
-    }
+    //     if (empty($productIds)) {
+    //         return redirect()->back()->with('error', 'No se seleccionaron productos.');
+    //     }
 
-    session()->put('selected_products', $productIds);
+    //     session()->put('selected_products', $productIds);
 
-    return redirect()->route('ofertas.mostrarSeleccionados');
-}
+    //     return redirect()->route('ofertas.mostrarSeleccionados');
+    // }
 }

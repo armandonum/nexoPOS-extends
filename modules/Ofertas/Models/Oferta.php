@@ -22,13 +22,10 @@ class Oferta extends Model
         'descripcion'
     ];
 
-    public function productos()
-    {
-        return $this->belongsToMany(Product::class, 'oferta_productos', 'oferta_id', 'producto_id');
+
+    //! Relacion con la tabla productos 
+    public function products(){
+        return $this->belongsToMany(Product::class, 'oferta_productos', 'oferta_id', 'producto_id')->withTimestamps();
     }
 
-    public function ofertaProductos()
-    {
-        return $this->hasMany(OfertaProducto::class, 'oferta_id');
-    }
 }
