@@ -23,6 +23,7 @@ class ServiceProvider extends AppServiceProvider
                     'href' => ns()->url('/dashboard/Ofertas'),
                
                 ],
+                
              
             ]);
                 return $menus;
