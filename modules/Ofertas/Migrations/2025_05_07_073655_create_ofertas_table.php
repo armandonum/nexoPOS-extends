@@ -11,23 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // id (PK)
-        // nombre (nombre de la oferta)
-        // precio_total (precio total después de descuento)
-        // monto_total_productos (suma de precios de productos sin descuento)
-        // porcentaje_descuento (porcentaje aplicado)
-        // descripcion (descripción de la oferta)
+    
         Schema::create('ofertas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
             $table->decimal('precio_total', 8, 2);
-            // $table->decimal( 'tipo_de_oferta_id')->nullable();
-            // $table->date('fecha_inicio')->nullable();
-            // $table->date('fecha_fin')->nullable();
             $table->decimal('monto_total_productos', 8, 2);
             $table->decimal('porcentaje_descuento', 5, 2);
             $table->string('descripcion');
-            $table->boolean('estado')->default(true);
+            $table->boolean('estado')->default(true); // Activo por defect
+            $table->foreignId('tipo_oferta_id')->constrained('tipo_ofertas')->onDelete('cascade');
+            $table->date('fecha_inicio');
+            $table->date('fecha_final');
             $table->timestamps();
         });
     }

@@ -1,295 +1,461 @@
 <template>
-    <div id="pos-cart" class="flex-auto flex flex-col">
+    <div id="pos-cart" class="flex-auto flex flex-col h-full">
         <div id="tools" class="flex pl-2 ns-tab" v-if="visibleSection === 'cart'">
-            <div @click="switchTo( 'cart' )" class="flex cursor-pointer rounded-tl-lg rounded-tr-lg px-3 py-2 font-semibold active tab">
-                <span>{{ __( 'Cart' ) }}</span>
-                <span v-if="order" class="flex items-center justify-center text-sm rounded-full h-6 w-6 bg-green-500 text-white ml-1">{{ order.products.length }}</span>
+            <div @click="switchTo('cart')"
+                class="flex cursor-pointer rounded-tl-lg rounded-tr-lg px-3 py-2 font-semibold active tab">
+                <span>{{ __('Cart') }}</span>
+                <span v-if="order"
+                    class="flex items-center justify-center text-sm rounded-full h-6 w-6 bg-green-500 text-white ml-1">{{
+                        order.products.length }}</span>
             </div>
-            <div @click="switchTo( 'grid' )" class="cursor-pointer rounded-tl-lg rounded-tr-lg px-3 py-2 border-t border-r border-l inactive tab">
-                {{ __( 'Products' ) }}
+            <div @click="switchTo('grid')"
+                class="cursor-pointer rounded-tl-lg rounded-tr-lg px-3 py-2 border-t border-r border-l inactive tab">
+                {{ __('Products') }}
             </div>
         </div>
         <div class="rounded shadow ns-tab-item flex-auto flex overflow-hidden">
             <div class="cart-table flex flex-auto flex-col overflow-hidden">
+
                 <div id="cart-toolbox" class="w-full p-2 border-b">
                     <div class="border rounded overflow-hidden">
+
                         <div class="flex flex-wrap">
                             <div class="ns-button">
                                 <button @click="openNotePopup()" class="w-full h-10 px-3 outline-none">
                                     <i class="las la-comment"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Comments' ) }}</span>
+                                    <span class="ml-1 hidden md:inline-block">{{ __('Comments') }}</span>
                                 </button>
                             </div>
                             <hr class="h-10" style="width: 1px">
                             <div class="ns-button">
-                                <button @click="selectTaxGroup()" class="w-full h-10 px-3 outline-none flex items-center">
+                                <button @click="selectTaxGroup()"
+                                    class="w-full h-10 px-3 outline-none flex items-center">
                                     <i class="las la-balance-scale-left"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Taxes' ) }}</span>
-                                    <span v-if="order.taxes && order.taxes.length > 0" class="ml-1 rounded-full flex items-center justify-center h-6 w-6 bg-info-secondary text-white">{{ order.taxes.length }}</span>
+                                    <span class="ml-1 hidden md:inline-block">{{ __('Taxes') }}</span>
+                                    <span v-if="order.taxes && order.taxes.length > 0"
+                                        class="ml-1 rounded-full flex items-center justify-center h-6 w-6 bg-info-secondary text-white">{{
+                                            order.taxes.length }}</span>
                                 </button>
                             </div>
                             <hr class="h-10" style="width: 1px">
                             <div class="ns-button">
                                 <button @click="selectCoupon()" class="w-full h-10 px-3 outline-none flex items-center">
                                     <i class="las la-tags"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Coupons' ) }}</span>
-                                    <span v-if="order.coupons && order.coupons.length > 0" class="ml-1 rounded-full flex items-center justify-center h-6 w-6 bg-info-secondary text-white">{{ order.coupons.length }}</span>
+                                    <span class="ml-1 hidden md:inline-block">{{ __('Coupons') }}</span>
+                                    <span v-if="order.coupons && order.coupons.length > 0"
+                                        class="ml-1 rounded-full flex items-center justify-center h-6 w-6 bg-info-secondary text-white">{{
+                                            order.coupons.length }}</span>
                                 </button>
                             </div>
                             <hr class="h-10" style="width: 1px">
                             <div class="ns-button">
-                                <button @click="defineOrderSettings()" class="w-full h-10 px-3 outline-none flex items-center">
+                                <button @click="defineOrderSettings()"
+                                    class="w-full h-10 px-3 outline-none flex items-center">
                                     <i class="las la-tools"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Settings' ) }}</span>
+                                    <span class="ml-1 hidden md:inline-block">{{ __('Settings') }}</span>
                                 </button>
                             </div>
                             <hr class="h-10" style="width: 1px">
                             <div class="ns-button" v-if="options.ns_pos_quick_product === 'yes'">
-                                <button @click="openAddQuickProduct()" class="w-full h-10 px-3 outline-none flex items-center">
+                                <button @click="openAddQuickProduct()"
+                                    class="w-full h-10 px-3 outline-none flex items-center">
                                     <i class="las la-plus"></i>
-                                    <span class="ml-1 hidden md:inline-block">{{ __( 'Product' ) }}</span>
+                                    <span class="ml-1 hidden md:inline-block">{{ __('Product') }}</span>
                                 </button>
                             </div>
                             <hr class="h-10" style="width: 1px">
-                        </div>
-                    </div>
-                </div>
-                <div id="cart-table-header" class="w-full text-primary font-semibold flex">
-                    <div class="w-full lg:w-4/6 p-2 border border-l-0 border-t-0">{{ __( 'Product' ) }}</div>
-                    <div class="hidden lg:flex lg:w-1/6 p-2 border-b border-t-0">{{ __( 'Quantity' ) }}</div>
-                    <div class="hidden lg:flex lg:w-1/6 p-2 border border-r-0 border-t-0">{{ __( 'Total' ) }}</div>
-                </div>
-                <div id="cart-products-table" class="flex flex-auto flex-col overflow-auto">
-                    
-                    <!-- Loop Procuts On Cart -->
 
-                    <div class="text-primary flex" v-if="products.length === 0">
-                        <div class="w-full text-center py-4 border-b">
-                            <h3>{{ __( 'No products added...' ) }}</h3>
-                        </div>
-                    </div>
-
-                    <div :product-index="index" :key="product.barcode" class="product-item flex" v-for="(product, index) of products">
-                        <div class="w-full lg:w-4/6 p-2 border border-l-0 border-t-0">
-                            <div class="flex justify-between product-details mb-1">
-                                <h3 class="font-semibold">
-                                    {{ product.name }} &mdash; {{ product.unit_name }}
-                                </h3>
-                                <div class="-mx-1 flex product-options">
-                                    <div class="px-1"> 
-                                        <a @click="removeUsingIndex( index )" class="hover:text-error-secondary cursor-pointer outline-none border-dashed py-1 border-b border-error-secondary text-sm">
-                                            <i class="las la-trash text-xl"></i>
-                                        </a>
-                                    </div>
-                                    <div class="px-1" v-if="options.ns_pos_allow_wholesale_price && allowQuantityModification( product )"> 
-                                        <a :class="product.mode === 'wholesale' ? 'text-success-secondary border-success-secondary' : 'border-info-primary'" @click="toggleMode( product, index )" class="cursor-pointer outline-none border-dashed py-1 border-b  text-sm">
-                                            <i class="las la-award text-xl"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex justify-between product-controls">
-                                <div class="-mx-1 flex flex-wrap">
-                                    <div class="px-1 w-1/2 md:w-auto mb-1">
-                                        <a
-                                            @click="changeProductPrice( product )"
-                                            :class="product.mode === 'wholesale' ? 'text-success-secondary hover:text-success-secondary border-success-secondary' : 'border-info-primary'"
-                                            class="cursor-pointer outline-none border-dashed py-1 border-b  text-sm"
-                                        >{{ __( 'Price' ) }} : {{ nsCurrency( product.unit_price ) }}</a>
-                                    </div>
-                                    <div class="px-1 w-1/2 md:w-auto mb-1"> 
-                                        <a v-if="allowQuantityModification( product )" @click="openDiscountPopup( product, 'product', index )" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Discount' ) }} <span v-if="product.discount_type === 'percentage'">{{ product.discount_percentage }}%</span> : {{ nsCurrency( product.discount ) }}</a>
-                                    </div>
-                                    <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden"> 
-                                        <a v-if="allowQuantityModification( product )" @click="changeQuantity( product, index )" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Quantity' ) }}: {{ product.quantity }}</a>
-                                    </div>
-                                    <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden"> 
-                                        <span class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Total :' ) }} {{ nsCurrency( product.total_price ) }}</span>
-                                    </div>
-                                </div>
+                            <!-- Listado de ofertas disponible -->
+                            <div class="w-px h-10 bg-gray-300"></div>
+                            <div class="ns-button">
+                                <!-- Reemplazar el botón existente -->
+                                <button @click="toggleOffersView"
+                                    class="w-full h-10 px-3 outline-none flex items-center">
+                                    <i class="las la-gift"></i>
+                                    <span class="ml-1 hidden md:inline-block">{{ __('Ofertas disponibles') }}</span>
+                                </button>
                             </div>
                         </div>
-                        <div @click="changeQuantity( product, index )" :class="allowQuantityModification( product ) ? 'cursor-pointer ns-numpad-key' : ''" class="hidden lg:flex w-1/6 p-2 border-b items-center justify-center">
-                            <span v-if="allowQuantityModification( product )" class="border-b border-dashed border-info-primary p-2">{{ product.quantity }}</span>
-                        </div>
-                        <div class="hidden lg:flex w-1/6 p-2 border border-r-0 border-t-0 items-center justify-center">{{ nsCurrency( product.total_price ) }}</div>
-                    </div>
-                    
-                    <!-- End Loop -->
 
+                    </div>
                 </div>
-                <div id="cart-products-summary" class="flex">
-                    <table class="table ns-table w-full text-sm " v-if="visibleSection === 'both'">
-                        <tbody>
-                            <template v-if="options.ns_pos_price_with_tax === 'no'">
-                                <tr>
-                                    <td width="200" class="border p-2" colspan="2">
-                                        <span class="py-1">{{  __( 'Product Taxes' ) }}</span>
-                                    </td>
-                                    <td width="200" class="border p-2 text-right">{{ nsCurrency( order.products_tax_value ) }}</td>
-                                </tr>
-                            </template>
-                            <!-- <template v-if="options.ns_pos_price_with_tax === 'no'">
-                                <tr>
-                                    <td width="200" class="border p-2" colspan="2">
-                                        <span class="py-1">{{  __( 'Product Taxes' ) }}</span>
-                                    </td>
-                                    <td width="200" class="border p-2 text-right">{{ nsCurrency( order.products_tax_value ) }}</td>
-                                </tr>
-                                <tr>
-                                    <td width="200" class="border p-2">
-                                        <a @click="selectCustomer()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Customer' ) }}: {{ customerName }}</a>
-                                    </td>
-                                    <td width="200" class="border p-2">{{ __( 'Sub Total' ) }}</td>
-                                    <td width="200" class="border p-2 text-right">{{ nsCurrency( order.subtotal ) }}</td>
-                                </tr>
-                            </template>
-                            <template v-else>
-                                <tr>
-                                    <td width="200" class="border p-2">
-                                        <a @click="selectCustomer()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Customer' ) }}: {{ customerName }}</a>
-                                    </td>
-                                    <td width="200" class="border p-2">{{ __( 'Sub Total' ) }}</td>
-                                    <td width="200" class="border p-2 text-right">{{ nsCurrency( order.subtotal ) }}</td>
-                                </tr>
-                            </template> -->
-                            <tr>
-                                <td width="200" class="border p-2">
-                                    <a @click="selectCustomer()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Customer' ) }}: {{ customerName }}</a>
-                                </td>
-                                <td width="200" class="border p-2">{{ __( 'Sub Total' ) }}</td>
-                                <td width="200" class="border p-2 text-right">{{ nsCurrency( order.subtotal ) }}</td>
-                            </tr>
-                            <tr v-if="order.coupons.length > 0">
-                                <td width="200" class="border p-2"></td>
-                                <td width="200" class="border p-2">
-                                    <a @click="selectCoupon()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Coupons' ) }}</a>
-                                </td>
-                                <td width="200" class="border p-2 text-right">{{ nsCurrency( summarizeCoupons() ) }}</td>
-                            </tr>
-                            <tr>
-                                <td width="200" class="border p-2">
-                                    <a @click="openOrderType()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Type' ) }}: {{ selectedType }}</a>
-                                </td>
-                                <td width="200" class="border p-2">
-                                    <span>{{ __( 'Discount' ) }}</span>
-                                    <span v-if="order.discount_type === 'percentage'">({{ order.discount_percentage }}%)</span>
-                                    <span v-if="order.discount_type === 'flat'">({{ __( 'Flat' ) }})</span>
-                                </td>
-                                <td width="200" class="border p-2 text-right">
-                                    <a @click="openDiscountPopup( order, 'cart' )" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ nsCurrency( order.discount ) }}</a>
-                                </td>
-                            </tr>
-                            <tr v-if="order.type && order.type.identifier === 'delivery'">
-                                <td width="200" class="border p-2"></td>
-                                <td width="200" class="border p-2">
-                                    <a @click="openShippingPopup()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Shipping' ) }}</a>
-                                </td>
-                                <td width="200" class="border p-2 text-right">{{ nsCurrency( order.shipping ) }}</td>
-                            </tr>
-                            <tr class="success">
-                                <template v-if="[ 'flat_vat', 'variable_vat' ].includes( options.ns_pos_vat )">
-                                    <td width="200" class="border p-2">
-                                        <a @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ order.tax_group.name ? order.tax_group.name : __( 'Tax' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                    </td>
-                                </template>
-                                <template v-else>
-                                    <td width="200" class="border p-2"></td>
-                                </template>
-                                <!-- <td width="200" class="border p-2">
-                                    <template v-if="options.ns_pos_vat !== 'disabled'">
-                                        <template v-if="order && options.ns_pos_tax_type === 'exclusive'">
-                                            <a v-if="options.ns_pos_price_with_tax === 'yes'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax Included' ) }}: {{ nsCurrency( order.tax_value + order.products_tax_value ) }}</a>
-                                            <a v-else-if="options.ns_pos_price_with_tax === 'no'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                        </template>
-                                        <template v-else-if="order && options.ns_pos_tax_type === 'inclusive'">
-                                            <a v-if="options.ns_pos_price_with_tax === 'yes'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax Included' ) }}: {{ nsCurrency( order.tax_value + ( order.products_tax_value ) ) }}</a>
-                                            <a v-else-if="options.ns_pos_price_with_tax === 'no'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                        </template>
+
+
+
+
+
+
+                <div class="container-pos flex flex-col flex-grow overflow-y-auto">
+
+                    <!-- Mostrar/Ocultar contenido original basado en showOffers -->
+                    <div v-if="!showOffers" class="flex flex-col flex-grow overflow-y-auto">
+
+                        <div id="cart-table-header" class="w-full text-primary font-semibold flex">
+                            <div class="w-full lg:w-4/6 p-2 border border-l-0 border-t-0">{{ __('Product') }}</div>
+                            <div class="hidden lg:flex lg:w-1/6 p-2 border-b border-t-0">{{ __('Quantity') }}</div>
+                            <div class="hidden lg:flex lg:w-1/6 p-2 border border-r-0 border-t-0">{{ __('Total') }}
+                            </div>
+                        </div>
+
+
+                        <div id="cart-products-table" class="flex flex-auto flex-col overflow-auto">
+
+                            <!-- Loop Procuts On Cart -->
+                            <div class="text-primary flex" v-if="products.length === 0">
+                                <div class="w-full text-center py-4 border-b">
+                                    <h3>{{ __('No products added...') }}</h3>
+                                </div>
+                            </div>
+
+                            <div :product-index="index" :key="product.barcode" class="product-item flex"
+                                v-for="(product, index) of products">
+                                <div class="w-full lg:w-4/6 p-2 border border-l-0 border-t-0">
+                                    <div class="flex justify-between product-details mb-1">
+                                        <h3 class="font-semibold">
+                                            {{ product.name }} &mdash; {{ product.unit_name }}
+                                        </h3>
+                                        <div class="-mx-1 flex product-options">
+                                            <div class="px-1">
+                                                <a @click="removeUsingIndex(index)"
+                                                    class="hover:text-error-secondary cursor-pointer outline-none border-dashed py-1 border-b border-error-secondary text-sm">
+                                                    <i class="las la-trash text-xl"></i>
+                                                </a>
+                                            </div>
+                                            <div class="px-1"
+                                                v-if="options.ns_pos_allow_wholesale_price && allowQuantityModification(product)">
+                                                <a :class="product.mode === 'wholesale' ? 'text-success-secondary border-success-secondary' : 'border-info-primary'"
+                                                    @click="toggleMode(product, index)"
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b  text-sm">
+                                                    <i class="las la-award text-xl"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between product-controls">
+                                        <div class="-mx-1 flex flex-wrap">
+                                            <div class="px-1 w-1/2 md:w-auto mb-1">
+                                                <a @click="changeProductPrice(product)"
+                                                    :class="product.mode === 'wholesale' ? 'text-success-secondary hover:text-success-secondary border-success-secondary' : 'border-info-primary'"
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b  text-sm">{{
+                                                        __('Price') }} : {{ nsCurrency(product.unit_price) }}</a>
+                                            </div>
+                                            <div class="px-1 w-1/2 md:w-auto mb-1">
+                                                <a v-if="allowQuantityModification(product)"
+                                                    @click="openDiscountPopup(product, 'product', index)"
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                        __('Discount') }} <span
+                                                        v-if="product.discount_type === 'percentage'">{{
+                                                            product.discount_percentage }}%</span> : {{ nsCurrency(
+                                                            product.discount) }}</a>
+                                            </div>
+                                            <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden">
+                                                <a v-if="allowQuantityModification(product)"
+                                                    @click="changeQuantity(product, index)"
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                        __('Quantity') }}: {{ product.quantity }}</a>
+                                            </div>
+                                            <div class="px-1 w-1/2 md:w-auto mb-1 lg:hidden">
+                                                <span
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                        __('Total :') }} {{ nsCurrency(product.total_price) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div @click="changeQuantity(product, index)"
+                                    :class="allowQuantityModification(product) ? 'cursor-pointer ns-numpad-key' : ''"
+                                    class="hidden lg:flex w-1/6 p-2 border-b items-center justify-center">
+                                    <span v-if="allowQuantityModification(product)"
+                                        class="border-b border-dashed border-info-primary p-2">{{ product.quantity
+                                        }}</span>
+                                </div>
+                                <div
+                                    class="hidden lg:flex w-1/6 p-2 border border-r-0 border-t-0 items-center justify-center">
+                                    {{ nsCurrency(product.total_price) }}</div>
+                            </div>
+
+                            <!-- End Loop -->
+                        </div>
+
+
+                        <div id="cart-products-summary" class="flex">
+                            <table class="table ns-table w-full text-sm " v-if="visibleSection === 'both'">
+                                <tbody>
+                                    <template v-if="options.ns_pos_price_with_tax === 'no'">
+                                        <tr>
+                                            <td width="200" class="border p-2" colspan="2">
+                                                <span class="py-1">{{ __('Product Taxes') }}</span>
+                                            </td>
+                                            <td width="200" class="border p-2 text-right">{{ nsCurrency(
+                                                order.products_tax_value) }}</td>
+                                        </tr>
                                     </template>
-                                </td> -->
-                                <td width="200" class="border p-2">{{ __( 'Total' ) }}</td>
-                                <td width="200" class="border p-2 text-right">{{ nsCurrency( order.total ) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table ns-table w-full text-sm" v-if="visibleSection === 'cart'">
-                        <tbody>
-                            <tr>
-                                <td width="200" class="border p-2">
-                                    <a @click="selectCustomer()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Customer' ) }}: {{ customerName }}</a>
-                                </td>
-                                <td width="200" class="border p-2">
-                                    <div class="flex justify-between">
-                                        <span>{{ __( 'Sub Total' ) }}</span>
-                                        <span>{{ nsCurrency( order.subtotal ) }}</span>
+
+                                    <tr>
+                                        <td width="200" class="border p-2">
+                                            <a @click="selectCustomer()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __(
+                                                        'Customer') }}: {{ customerName }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2">{{ __('Sub Total') }}</td>
+                                        <td width="200" class="border p-2 text-right">{{ nsCurrency(order.subtotal) }}
+                                        </td>
+                                    </tr>
+                                    <tr v-if="order.coupons.length > 0">
+                                        <td width="200" class="border p-2"></td>
+                                        <td width="200" class="border p-2">
+                                            <a @click="selectCoupon()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __('Coupons'
+                                                    ) }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2 text-right">{{ nsCurrency(summarizeCoupons())
+                                        }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="200" class="border p-2">
+                                            <a @click="openOrderType()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __('Type')
+                                                }}: {{ selectedType }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2">
+                                            <span>{{ __('Discount') }}</span>
+                                            <span v-if="order.discount_type === 'percentage'">({{
+                                                order.discount_percentage
+                                            }}%)</span>
+                                            <span v-if="order.discount_type === 'flat'">({{ __('Flat') }})</span>
+                                        </td>
+                                        <td width="200" class="border p-2 text-right">
+                                            <a @click="openDiscountPopup(order, 'cart')"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    nsCurrency(
+                                                        order.discount) }}</a>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="order.type && order.type.identifier === 'delivery'">
+                                        <td width="200" class="border p-2"></td>
+                                        <td width="200" class="border p-2">
+                                            <a @click="openShippingPopup()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __(
+                                                        'Shipping') }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2 text-right">{{ nsCurrency(order.shipping) }}
+                                        </td>
+                                    </tr>
+                                    <tr class="success">
+                                        <template v-if="['flat_vat', 'variable_vat'].includes(options.ns_pos_vat)">
+                                            <td width="200" class="border p-2">
+                                                <a @click="openTaxSummary()"
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                        order.tax_group.name ? order.tax_group.name : __('Tax') }}: {{
+                                                        nsCurrency(order.tax_value) }}</a>
+                                            </td>
+                                        </template>
+                                        <template v-else>
+                                            <td width="200" class="border p-2"></td>
+                                        </template>
+
+                                        <td width="200" class="border p-2">{{ __('Total') }}</td>
+                                        <td width="200" class="border p-2 text-right">{{ nsCurrency(order.total) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table ns-table w-full text-sm" v-if="visibleSection === 'cart'">
+                                <tbody>
+                                    <tr>
+                                        <td width="200" class="border p-2">
+                                            <a @click="selectCustomer()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __(
+                                                        'Customer') }}: {{ customerName }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2">
+                                            <div class="flex justify-between">
+                                                <span>{{ __('Sub Total') }}</span>
+                                                <span>{{ nsCurrency(order.subtotal) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="order.coupons.length > 0">
+                                        <td width="200" class="border p-2"></td>
+                                        <td width="200" class="border p-2">
+                                            <a @click="selectCoupon()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __(
+                                                        'Coupons') }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2 text-right">{{ nsCurrency(summarizeCoupons())
+                                        }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="200" class="border p-2">
+                                            <a @click="openOrderType()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __(
+                                                        'Type') }}: {{ selectedType }}</a>
+                                        </td>
+                                        <td width="200" class="border p-2">
+                                            <div class="flex justify-between items-center">
+                                                <p>
+                                                    <span>{{ __('Discount') }}</span>
+                                                    <span v-if="order.discount_type === 'percentage'">({{
+                                                        order.discount_percentage }}%)</span>
+                                                    <span v-if="order.discount_type === 'flat'">({{ __('Flat')
+                                                    }})</span>
+                                                </p>
+                                                <a @click="openDiscountPopup(order, 'cart')"
+                                                    class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                        nsCurrency(order.discount) }}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="order.type && order.type.identifier === 'delivery'">
+                                        <td width="200" class="border p-2"></td>
+                                        <td width="200" class="border p-2">
+                                            <a @click="openShippingPopup()"
+                                                class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                    __(
+                                                        'Shipping') }}</a>
+                                            <span></span>
+                                        </td>
+                                    </tr>
+                                    <tr class="success">
+                                        <td width="200" class="border p-2">
+                                            <template v-if="options.ns_pos_vat !== 'disabled'">
+                                                <template v-if="order && options.ns_pos_tax_type === 'exclusive'">
+                                                    <a v-if="options.ns_pos_price_with_tax === 'yes'"
+                                                        @click="openTaxSummary()"
+                                                        class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                            __('Tax') }}: {{ nsCurrency(order.tax_value) }}</a>
+                                                    <a v-else-if="options.ns_pos_price_with_tax === 'no'"
+                                                        @click="openTaxSummary()"
+                                                        class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                            __('Tax Inclusive') }}: {{ nsCurrency(order.tax_value) }}</a>
+                                                </template>
+                                                <template v-else-if="order && options.ns_pos_tax_type === 'inclusive'">
+                                                    <a v-if="options.ns_pos_price_with_tax === 'yes'"
+                                                        @click="openTaxSummary()"
+                                                        class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                            __('Tax Included') }}: {{ nsCurrency(order.tax_value) }}</a>
+                                                    <a v-else-if="options.ns_pos_price_with_tax === 'no'"
+                                                        @click="openTaxSummary()"
+                                                        class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{
+                                                            __('Tax Included') }}: {{ nsCurrency(order.tax_value) }}</a>
+                                                </template>
+                                            </template>
+                                        </td>
+                                        <td width="200" class="border p-2">
+                                            <div class="flex justify-between w-full">
+                                                <span>{{ __('Total') }}</span>
+                                                <span>{{ nsCurrency(order.total) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="h-16 flex flex-shrink-0 border-t border-box-edge" id="cart-bottom-buttons">
+                            <template v-for="button of (new Array(4)).fill()"
+                                v-if="Object.keys(cartButtons).length === 0">
+                                <div :class="takeRandomClass()"
+                                    class="animate-pulse flex-shrink-0 w-1/4 flex items-center font-bold cursor-pointer justify-center  border-r  flex-auto">
+                                    <i class="mx-4 rounded-full bg-slate-300 h-5 w-5"></i>
+                                    <div class="text-lg mr-4 hidden md:flex md:flex-auto lg:text-2xl">
+                                        <div class="h-2 flex-auto bg-slate-200 rounded"></div>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr v-if="order.coupons.length > 0">
-                                <td width="200" class="border p-2"></td>
-                                <td width="200" class="border p-2">
-                                    <a @click="selectCoupon()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Coupons' ) }}</a>
-                                </td>
-                                <td width="200" class="border p-2 text-right">{{ nsCurrency( summarizeCoupons() ) }}</td>
-                            </tr>
-                            <tr>
-                                <td width="200" class="border p-2">
-                                    <a @click="openOrderType()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Type' ) }}: {{ selectedType }}</a>
-                                </td>
-                                <td width="200" class="border p-2">
-                                    <div class="flex justify-between items-center">
-                                        <p>
-                                            <span>{{ __( 'Discount' ) }}</span>
-                                            <span v-if="order.discount_type === 'percentage'">({{ order.discount_percentage }}%)</span>
-                                            <span v-if="order.discount_type === 'flat'">({{ __( 'Flat' ) }})</span>
+                                </div>
+                            </template>
+                            <template v-for="component of cartButtons">
+                                <component :is="component" :order="order" :settings="settings"></component>
+                            </template>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                    <!-- NUEVA SECCIÓN DE OFERTA -->
+                    <div v-else class="p-4">
+                        <!-- Loader mientras se cargan las ofertas -->
+                        <div v-if="loadingOffers" class="flex justify-center items-center h-32">
+                            <i class="las la-spinner animate-spin text-6xl"></i>
+                        </div>
+
+                        <!-- Mensaje si no hay ofertas -->
+                        <div v-else-if="offers.length === 0" class="text-center py-8">
+                            <p class="text-gray-500">{{ __('No hay ofertas activas disponibles') }}</p>
+                        </div>
+
+                        <!-- Lista de ofertas -->
+                        <!-- Modificar la sección de ofertas en ns-pos-cart.vue -->
+                        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                            <div v-for="offer in sortedOffers" :key="offer.id" :class="[
+                                'border rounded-lg p-4 shadow-sm transition-colors duration-200',
+                                offer.dias_restantes <= 5 ? 'bg-red-50' : 'bg-white'
+                            ]">
+                                <div class="border-b pb-3 mb-3">
+                                    <h3 class="text-lg font-bold text-gray-800">{{ offer.nombre }}</h3>
+                                    <p class="text-gray-600 mt-1">{{ offer.descripcion }}</p>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <span class="text-sm text-gray-500">
+                                            {{ __('Válido hasta') }}: {{ formatDate(offer.fecha_final) }}
+                                        </span>
+                                        <span class="text-sm font-medium text-blue-600">
+                                            {{ offer.tipo_oferta.nombre }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Alerta de días restantes -->
+                                    <div v-if="offer.dias_restantes <= 5"
+                                        class="mt-2 p-2 bg-red-100 border border-red-200 rounded-md">
+                                        <p class="text-red-700 text-sm font-medium flex items-center">
+                                            <i class="las la-clock mr-2"></i>
+                                            {{ offer.dias_restantes === 0
+                                                ? __('¡Último día!')
+                                                : __(`Faltan ${offer.dias_restantes} día(s) para concluir`)
+                                            }}
                                         </p>
-                                        <a @click="openDiscountPopup( order, 'cart' )" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ nsCurrency( order.discount ) }}</a>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr v-if="order.type && order.type.identifier === 'delivery'">
-                                <td width="200" class="border p-2"></td>
-                                <td width="200" class="border p-2">
-                                    <a @click="openShippingPopup()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Shipping' ) }}</a>
-                                    <span></span>                          
-                                </td>
-                            </tr>
-                            <tr class="success">
-                                <td width="200" class="border p-2">
-                                    <template v-if="options.ns_pos_vat !== 'disabled'">
-                                        <template v-if="order && options.ns_pos_tax_type === 'exclusive'">
-                                            <a v-if="options.ns_pos_price_with_tax === 'yes'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                            <a v-else-if="options.ns_pos_price_with_tax === 'no'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax Inclusive' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                        </template>
-                                        <template v-else-if="order && options.ns_pos_tax_type === 'inclusive'">
-                                            <a v-if="options.ns_pos_price_with_tax === 'yes'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax Included' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                            <a v-else-if="options.ns_pos_price_with_tax === 'no'" @click="openTaxSummary()" class="cursor-pointer outline-none border-dashed py-1 border-b border-info-primary text-sm">{{ __( 'Tax Included' ) }}: {{ nsCurrency( order.tax_value ) }}</a>
-                                        </template>
-                                    </template>
-                                </td>
-                                <td width="200" class="border p-2">
-                                    <div class="flex justify-between w-full">
-                                        <span>{{ __( 'Total' ) }}</span>
-                                        <span>{{ nsCurrency( order.total ) }}</span>    
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="h-16 flex flex-shrink-0 border-t border-box-edge" id="cart-bottom-buttons">
-                    <template v-for="button of (new Array(4)).fill()" v-if="Object.keys( cartButtons ).length === 0"> 
-                        <div :class="takeRandomClass()" class="animate-pulse flex-shrink-0 w-1/4 flex items-center font-bold cursor-pointer justify-center  border-r  flex-auto">
-                            <i class="mx-4 rounded-full bg-slate-300 h-5 w-5"></i>
-                            <div class="text-lg mr-4 hidden md:flex md:flex-auto lg:text-2xl">
-                                <div class="h-2 flex-auto bg-slate-200 rounded"></div>
+                                </div>
+
+                                <!-- Productos de la oferta -->
+                                <div class="space-y-2" v-if="offer.productos && offer.productos.length > 0">
+                                    <h4 class="font-medium text-gray-700">{{ __('Productos incluidos') }}:</h4>
+                                    <ul class="divide-y">
+                                        <li v-for="product in offer.productos" :key="product.id"
+                                            class="py-2 flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">{{ product.name }}</span>
+                                            <span class="text-sm text-green-600">{{ nsCurrency(product.price) }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div v-else class="text-center text-gray-500 py-2">
+                                    {{ __('No hay productos en esta oferta') }}
+                                </div>
                             </div>
                         </div>
-                    </template>
-                    <template v-for="component of cartButtons">
-                        <component :is="component" :order="order" :settings="settings"></component>
-                    </template>
+
+                        <!-- Botón para volver -->
+                        <div class="mt-4 flex justify-end">
+                            <button @click="showOffers = false"
+                                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700">
+                                {{ __('Volver atrás') }}
+                            </button>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -321,24 +487,58 @@ import nsPosOrderSettingsVue from '~/popups/ns-pos-order-settings.vue';
 import nsPosProductPricePopupVue from '~/popups/ns-pos-product-price-popup.vue';
 import nsPosQuickProductPopupVue from '~/popups/ns-pos-quick-product-popup.vue';
 
+import nsPosOffersPopupVue from '~/popups/ns-pos-offers-popup.vue';
+// import { Offer } from '~/popups/ns-pos-offers-popup.vue';
+import { nsHttpClient } from '~/bootstrap';
+
 declare const POS, nsShortcuts, nsHotPress;
 
 import { ref, markRaw } from '@vue/reactivity';
 import { Order } from '~/interfaces/order';
 import { Ref } from 'vue';
 
+
+
+interface Offer {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    porcentaje_descuento: number;
+    fecha_inicio: string;
+    fecha_final: string;
+    dias_restantes: number;
+    tipo_oferta: {
+        id: number;
+        nombre: string;
+        descripcion: string;
+    };
+    productos: {
+        id: number;
+        name: string;
+        price: number;
+        barcode: string;
+    }[];
+}
+
+// Definimos una interfaz para la respuesta de la API
+interface ApiResponse {
+    data: Offer[];
+    status: string;
+    message: string;
+}
+
 export default {
     name: 'ns-pos-cart',
     data: () => {
         return {
-            popup : null,
+            popup: null,
             cartButtons: {},
             products: [],
             defaultCartButtons: {
-                nsPosPayButton: markRaw( nsPosPayButton ),
-                nsPosHoldButton: markRaw( nsPosHoldButton ),
-                nsPosDiscountButton: markRaw( nsPosDiscountButton ),
-                nsPosVoidButton: markRaw( nsPosVoidButton ),
+                nsPosPayButton: markRaw(nsPosPayButton),
+                nsPosHoldButton: markRaw(nsPosHoldButton),
+                nsPosDiscountButton: markRaw(nsPosDiscountButton),
+                nsPosVoidButton: markRaw(nsPosVoidButton),
             },
             visibleSection: null,
             visibleSectionSubscriber: null,
@@ -352,6 +552,11 @@ export default {
             settings: {},
             types: [],
             order: ref({}) as Ref<Order>,
+
+            // Nuevos datos para las ofertas
+            showOffers: false,
+            offers: [] as Offer[],
+            loadingOffers: false,
         }
     },
     computed: {
@@ -362,73 +567,77 @@ export default {
             return this.visibleSection === 'cart';
         },
         customerName() {
-            return this.order.customer ? `${this.order.customer.first_name || this.order.customer.last_name ? this.getFirstName() : this.getUserName() }` : 'N/A';
+            return this.order.customer ? `${this.order.customer.first_name || this.order.customer.last_name ? this.getFirstName() : this.getUserName()}` : 'N/A';
         },
         couponName() {
-            return __( 'Apply Coupon' );
-        }
+            return __('Apply Coupon');
+        },
+
+        sortedOffers() {
+        return [...this.offers].sort((a, b) => a.dias_restantes - b.dias_restantes);
+    }
     },
     mounted() {
-        this.cartButtonsSubscriber  =   POS.cartButtons.subscribe( cartButtons => {
-            this.cartButtons    =   cartButtons;
+        this.cartButtonsSubscriber = POS.cartButtons.subscribe(cartButtons => {
+            this.cartButtons = cartButtons;
         });
 
-        this.optionsSubscriber  =   POS.options.subscribe( options => {
-            this.options    =   options;
+        this.optionsSubscriber = POS.options.subscribe(options => {
+            this.options = options;
         });
 
-        this.typeSubscribe  =   POS.types.subscribe( types => this.types = types );
+        this.typeSubscribe = POS.types.subscribe(types => this.types = types);
 
-        this.orderSubscribe  =   POS.order.subscribe( order => {
-            this.order   =   ref(order);
+        this.orderSubscribe = POS.order.subscribe(order => {
+            this.order = ref(order);
         });
 
-        this.productSubscribe  =   POS.products.subscribe( products => {
+        this.productSubscribe = POS.products.subscribe(products => {
             this.products = ref(products);
         });
 
-        this.settingsSubscribe  =   POS.settings.subscribe( settings => {
-            this.settings   =   ref(settings);
+        this.settingsSubscribe = POS.settings.subscribe(settings => {
+            this.settings = ref(settings);
         });
 
-        this.visibleSectionSubscriber   =   POS.visibleSection.subscribe( section => {
-            this.visibleSection     =   ref(section);
+        this.visibleSectionSubscriber = POS.visibleSection.subscribe(section => {
+            this.visibleSection = ref(section);
         });
 
         /**
          * everytime the cart reset
          * we restore original buttons.
          */
-        nsHooks.addAction( 'ns-before-cart-reset', 'ns-pos-cart-buttons', () => {
-            POS.cartButtons.next( this.defaultCartButtons );
+        nsHooks.addAction('ns-before-cart-reset', 'ns-pos-cart-buttons', () => {
+            POS.cartButtons.next(this.defaultCartButtons);
         });
 
         /**
          * let's register hotkeys
          */
-        for( let shortcut in nsShortcuts ) {
-            if ([ 
-                    'ns_pos_keyboard_shipping', 
-                ].includes( shortcut ) ) {
+        for (let shortcut in nsShortcuts) {
+            if ([
+                'ns_pos_keyboard_shipping',
+            ].includes(shortcut)) {
                 nsHotPress
-                    .create( 'ns_pos_keyboard_shipping' )
-                    .whenNotVisible([ '.is-popup' ])
-                    .whenPressed( nsShortcuts[ shortcut ] !== null ? nsShortcuts[ shortcut ].join( '+' ) : null, ( event ) => {
+                    .create('ns_pos_keyboard_shipping')
+                    .whenNotVisible(['.is-popup'])
+                    .whenPressed(nsShortcuts[shortcut] !== null ? nsShortcuts[shortcut].join('+') : null, (event) => {
                         event.preventDefault();
                         this.openShippingPopup();
-                });
+                    });
             }
 
-            if ([ 
-                    'ns_pos_keyboard_note', 
-                ].includes( shortcut ) ) {
+            if ([
+                'ns_pos_keyboard_note',
+            ].includes(shortcut)) {
                 nsHotPress
-                    .create( 'ns_pos_keyboard_note' )
-                    .whenNotVisible([ '.is-popup' ])
-                    .whenPressed( nsShortcuts[ shortcut ] !== null ? nsShortcuts[ shortcut ].join( '+' ) : null, ( event ) => {
+                    .create('ns_pos_keyboard_note')
+                    .whenNotVisible(['.is-popup'])
+                    .whenPressed(nsShortcuts[shortcut] !== null ? nsShortcuts[shortcut].join('+') : null, (event) => {
                         event.preventDefault();
                         this.openNotePopup();
-                });
+                    });
             }
         }
     },
@@ -440,9 +649,9 @@ export default {
         this.settingsSubscribe.unsubscribe();
         this.optionsSubscriber.unsubscribe();
         this.cartButtonsSubscriber.unsubscribe();
-        
-        nsHotPress.destroy( 'ns_pos_keyboard_shipping' );
-        nsHotPress.destroy( 'ns_pos_keyboard_note' );
+
+        nsHotPress.destroy('ns_pos_keyboard_shipping');
+        nsHotPress.destroy('ns_pos_keyboard_note');
     },
     methods: {
         __,
@@ -451,7 +660,7 @@ export default {
         switchTo,
 
         getFirstName() {
-            return `${this.order.customer.first_name || ''} ${this.order.customer.last_name || '' }`;
+            return `${this.order.customer.first_name || ''} ${this.order.customer.last_name || ''}`;
         },
 
         getUserName() {
@@ -463,92 +672,92 @@ export default {
         },
 
         openAddQuickProduct() {
-            const promise   =   new Promise( ( resolve, reject ) => {
-                Popup.show( nsPosQuickProductPopupVue, { resolve, reject })
+            const promise = new Promise((resolve, reject) => {
+                Popup.show(nsPosQuickProductPopupVue, { resolve, reject })
             });
 
-            promise.then( _ => {
+            promise.then(_ => {
                 // ...
-            }).catch( _ => {
+            }).catch(_ => {
                 // ...
             })
         },
 
         summarizeCoupons() {
-            const coupons   =   this.order.coupons.map( coupon => coupon.value );
+            const coupons = this.order.coupons.map(coupon => coupon.value);
 
-            if ( coupons.length > 0 ) {
-                return coupons.reduce( ( before, after ) => before + after );
+            if (coupons.length > 0) {
+                return coupons.reduce((before, after) => before + after);
             }
 
             return 0;
         },
 
-        async changeProductPrice( product ) {
-            if ( ! this.settings.edit_purchase_price ) {
-                return nsSnackBar.error( __( `You don't have the right to edit the purchase price.` ) ).subscribe();
+        async changeProductPrice(product) {
+            if (!this.settings.edit_purchase_price) {
+                return nsSnackBar.error(__(`You don't have the right to edit the purchase price.`)).subscribe();
             }
 
-            if ( product.product_type === 'dynamic' ) {
-                return nsSnackBar.error( __( 'Dynamic product can\'t have their price updated.' ) ).subscribe();
+            if (product.product_type === 'dynamic') {
+                return nsSnackBar.error(__('Dynamic product can\'t have their price updated.')).subscribe();
             }
 
-            if ( this.settings.unit_price_editable ) {
+            if (this.settings.unit_price_editable) {
                 try {
-                    const newPrice  =   await new Promise( ( resolve, reject ) => {
-                        return Popup.show( nsPosProductPricePopupVue, { product: Object.assign({}, product ), resolve, reject })
+                    const newPrice = await new Promise((resolve, reject) => {
+                        return Popup.show(nsPosProductPricePopupVue, { product: Object.assign({}, product), resolve, reject })
                     });
 
-                    const quantities  =   {
-                        ...product.$quantities(), 
+                    const quantities = {
+                        ...product.$quantities(),
                         ...{
-                            custom_price_edit : newPrice,
+                            custom_price_edit: newPrice,
                             custom_price_with_tax: newPrice,
                             custom_price_without_tax: newPrice
                         }
                     }
 
-                    product.$quantities     =   () => quantities;
+                    product.$quantities = () => quantities;
 
                     /**
                      * We need to change the price mode
                      * to avoid restoring the original prices.
                      */
-                    product.mode    =   'custom';
-                                        
-                    POS.recomputeProducts( POS.products.getValue() );
+                    product.mode = 'custom';
+
+                    POS.recomputeProducts(POS.products.getValue());
                     POS.refreshCart();
 
-                    return nsSnackBar.success( __( 'The product price has been updated.' ) ).subscribe();
-                } catch( exception ) {
-                    if ( exception !== false ) {
-                        nsSnackBar.error( exception ).subscribe();
+                    return nsSnackBar.success(__('The product price has been updated.')).subscribe();
+                } catch (exception) {
+                    if (exception !== false) {
+                        nsSnackBar.error(exception).subscribe();
                         throw exception;
                     }
                 }
             } else {
-                return nsSnackBar.error( __( 'The editable price feature is disabled.' ) ).subscribe();
+                return nsSnackBar.error(__('The editable price feature is disabled.')).subscribe();
             }
         },
 
         async selectCoupon() {
             try {
-                const response  =   await new Promise( ( resolve, reject ) => {
-                    Popup.show( nsPosCouponsLoadPopupVue, { resolve, reject })
+                const response = await new Promise((resolve, reject) => {
+                    Popup.show(nsPosCouponsLoadPopupVue, { resolve, reject })
                 })
-            } catch( exception ) {
-                
+            } catch (exception) {
+
             }
         },
 
         async defineOrderSettings() {
-            if ( ! this.settings.edit_settings ) {
-                return nsSnackBar.error( __( 'You\'re not allowed to edit the order settings.' ) ).subscribe();
+            if (!this.settings.edit_settings) {
+                return nsSnackBar.error(__('You\'re not allowed to edit the order settings.')).subscribe();
             }
 
             try {
-                const response  =   await new Promise<{}>( ( resolve, reject) => {
-                    Popup.show( nsPosOrderSettingsVue, { resolve, reject, order : this.order });
+                const response = await new Promise<{}>((resolve, reject) => {
+                    Popup.show(nsPosOrderSettingsVue, { resolve, reject, order: this.order });
                 });
 
                 /**
@@ -556,140 +765,142 @@ export default {
                  */
                 POS.order.next({ ...this.order, ...response });
 
-            } catch( exception ) {
+            } catch (exception) {
                 // we shouldn't catch any exception here.
             }
         },
 
         async openNotePopup() {
             try {
-                const response  =   await new Promise<{}>( ( resolve, reject ) => {
-                    const note              =   this.order.note;
-                    const note_visibility   =   this.order.note_visibility;
-                    Popup.show( nsPosNotePopupVue, { resolve, reject, note, note_visibility });
+                const response = await new Promise<{}>((resolve, reject) => {
+                    const note = this.order.note;
+                    const note_visibility = this.order.note_visibility;
+                    Popup.show(nsPosNotePopupVue, { resolve, reject, note, note_visibility });
                 });
 
-                const order     =   { ...this.order, ...response };
-                POS.order.next( order );
-            } catch( exception ) {
-                if ( exception !== false ) {
-                    nsSnackBar.error( exception.message ).subscribe();
+                const order = { ...this.order, ...response };
+                POS.order.next(order);
+            } catch (exception) {
+                if (exception !== false) {
+                    nsSnackBar.error(exception.message).subscribe();
                 }
             }
         },
 
-        async selectTaxGroup( activeTab = 'settings' ) {
+        async selectTaxGroup(activeTab = 'settings') {
             try {
-                const response              =   await new Promise<{}>( ( resolve, reject ) => {
-                    const taxes             =   this.order.taxes;
-                    const tax_group_id      =   this.order.tax_group_id;
-                    const tax_type          =   this.order.tax_type;
-                    Popup.show( nsPosTaxPopupVue, { resolve, reject, taxes, tax_group_id, tax_type, activeTab })
+                const response = await new Promise<{}>((resolve, reject) => {
+                    const taxes = this.order.taxes;
+                    const tax_group_id = this.order.tax_group_id;
+                    const tax_type = this.order.tax_type;
+                    Popup.show(nsPosTaxPopupVue, { resolve, reject, taxes, tax_group_id, tax_type, activeTab })
                 });
 
-                const order             =   { ...this.order, ...response };
-                
-                POS.order.next( order );
+                const order = { ...this.order, ...response };
+
+                POS.order.next(order);
                 POS.refreshCart();
 
-            } catch( exception ) {
+            } catch (exception) {
                 // popup is closed... not needed to log or do anything else
             }
         },
 
+
+
         openTaxSummary() {
-            this.selectTaxGroup( 'summary' );
+            this.selectTaxGroup('summary');
         },
 
         selectCustomer() {
-            Popup.show( nsPosCustomerPopupVue );
+            Popup.show(nsPosCustomerPopupVue);
         },
 
-        async openDiscountPopup( reference, type, index = null ) {
-            if ( ! this.settings.products_discount && type === 'product' ) {
-                return nsSnackBar.error( __( `You're not allowed to add a discount on the product.` ) ).subscribe();
+        async openDiscountPopup(reference, type, index = null) {
+            if (!this.settings.products_discount && type === 'product') {
+                return nsSnackBar.error(__(`You're not allowed to add a discount on the product.`)).subscribe();
             }
 
-            if ( ! this.settings.cart_discount && type === 'cart' ) {
-                return nsSnackBar.error( __( `You're not allowed to add a discount on the cart.` ) ).subscribe();
+            if (!this.settings.cart_discount && type === 'cart') {
+                return nsSnackBar.error(__(`You're not allowed to add a discount on the cart.`)).subscribe();
             }
 
-            if ( type === 'product' ) {
+            if (type === 'product') {
                 reference.disable_flat = true;
             }
 
             try {
-                const promise   =   await new Promise( ( resolve, reject ) => {
-                    Popup.show( nsPosDiscountPopupVue, { 
+                const promise = await new Promise((resolve, reject) => {
+                    Popup.show(nsPosDiscountPopupVue, {
                         reference,
                         resolve,
                         reject,
                         type,
-                        onSubmit( response ) {
+                        onSubmit(response) {
                             /**
                              * we should check here, if the discount is flat, we'll make sure
                              * the amount doesn't exceed the total_price of the product.
                              */
-                            if ( response.discount_type === 'flat' && response.discount > reference.total_price ) {
-                                return nsSnackBar.error( __( 'The discount amount can\'t exceed the total price of the product.' ) ).subscribe();
+                            if (response.discount_type === 'flat' && response.discount > reference.total_price) {
+                                return nsSnackBar.error(__('The discount amount can\'t exceed the total price of the product.')).subscribe();
                             }
-                            
-                            
-                            if ( type === 'product' ) {
-                                POS.updateProduct( reference, response, index );
-                            } else if ( type === 'cart' ) {
-                                POS.updateCart( reference, response );
+
+
+                            if (type === 'product') {
+                                POS.updateProduct(reference, response, index);
+                            } else if (type === 'cart') {
+                                POS.updateCart(reference, response);
                             }
                         }
                     }, {
                         popupClass: 'bg-white h:2/3 shadow-lg xl:w-1/4 lg:w-2/5 md:w-2/3 w-full'
                     })
                 })
-            } catch ( exception ) {
+            } catch (exception) {
                 // the popup might just be closed...
             }
         },
 
-        toggleMode( product, index ) {
-            if ( ! this.options.ns_pos_allow_wholesale_price ) {
-                return nsSnackBar.error( __( 'Unable to change the price mode. This feature has been disabled.' ) ).subscribe();
+        toggleMode(product, index) {
+            if (!this.options.ns_pos_allow_wholesale_price) {
+                return nsSnackBar.error(__('Unable to change the price mode. This feature has been disabled.')).subscribe();
             }
 
-            if ( product.mode === 'normal' ) {
-                Popup.show( PosConfirmPopup, {
-                    title: __( 'Enable WholeSale Price' ),
-                    message: __( 'Would you like to switch to wholesale price ?' ),
-                    onAction( action ) {
-                        if ( action ) {
-                            POS.updateProduct( product, { mode: 'wholesale' }, index );
+            if (product.mode === 'normal') {
+                Popup.show(PosConfirmPopup, {
+                    title: __('Enable WholeSale Price'),
+                    message: __('Would you like to switch to wholesale price ?'),
+                    onAction(action) {
+                        if (action) {
+                            POS.updateProduct(product, { mode: 'wholesale' }, index);
                         }
                     }
                 });
             } else {
-                Popup.show( PosConfirmPopup, {
-                    title: __( 'Enable Normal Price' ),
-                    message: __( 'Would you like to switch to normal price ?' ),
-                    onAction( action ) {
-                        if ( action ) {
-                            POS.updateProduct( product, { mode: 'normal' }, index );
+                Popup.show(PosConfirmPopup, {
+                    title: __('Enable Normal Price'),
+                    message: __('Would you like to switch to normal price ?'),
+                    onAction(action) {
+                        if (action) {
+                            POS.updateProduct(product, { mode: 'normal' }, index);
                         }
                     }
                 });
             }
         },
-        removeUsingIndex( index ) {
-            Popup.show( PosConfirmPopup, {
-                title: __( 'Confirm Your Action' ),
-                message: __( 'Would you like to delete this product ?' ),
-                onAction( action ) {
-                    if ( action ) {
-                        POS.removeProductUsingIndex( index );
+        removeUsingIndex(index) {
+            Popup.show(PosConfirmPopup, {
+                title: __('Confirm Your Action'),
+                message: __('Would you like to delete this product ?'),
+                onAction(action) {
+                    if (action) {
+                        POS.removeProductUsingIndex(index);
                     }
                 }
             });
         },
 
-        allowQuantityModification( product ) {
+        allowQuantityModification(product) {
             return product.product_type === 'product';
         },
 
@@ -697,25 +908,169 @@ export default {
          * This will use the previously used 
          * popup to run the promise.
          */
-        changeQuantity( product, index ) {
-            if ( this.allowQuantityModification( product ) ) {
-                const quantityPromise   =   new ProductQuantityPromise( product );
-                quantityPromise.run({ 
-                    unit_quantity_id    : product.unit_quantity_id, 
-                    unit_name           : product.unit_name, 
-                    $quantities         : product.$quantities 
-                }).then( result => {
-                    POS.updateProduct( product, result, index );
+        changeQuantity(product, index) {
+            if (this.allowQuantityModification(product)) {
+                const quantityPromise = new ProductQuantityPromise(product);
+                quantityPromise.run({
+                    unit_quantity_id: product.unit_quantity_id,
+                    unit_name: product.unit_name,
+                    $quantities: product.$quantities
+                }).then(result => {
+                    POS.updateProduct(product, result, index);
                 });
             }
         },
 
         openOrderType() {
-            Popup.show( nsPosOrderTypePopupVue );
+            Popup.show(nsPosOrderTypePopupVue);
         },
 
         openShippingPopup() {
-            Popup.show( nsPosShippingPopupVue );
+            Popup.show(nsPosShippingPopupVue);
+        },
+
+
+
+
+
+
+
+        
+
+        //! METODOS PARA LA PARTE DE OFERTAS
+        async toggleOffersView() {
+            console.log('Activar o desactivar la vista de ofertas:'); // Para debugging
+
+            this.showOffers = !this.showOffers;
+
+            if (this.showOffers) {
+                console.log('Loading offers...'); // Para debugging
+
+                await this.loadOffers();
+            }
+        },
+
+        // El método loadOffers quedaría así
+        async loadOffers() {
+            this.loadingOffers = true;
+            try {
+                const response = await new Promise<ApiResponse>((resolve, reject) => {
+                    nsHttpClient.get('/api/ofertas/activas')
+                        .subscribe({
+                            next: (response: any) => {
+                                console.log('Response completa:', response); // Para debugging
+                                console.log('Ofertas:', response.data); // Para debugging
+
+                                // Verificar si hay productos en la primera oferta
+                                if (response.data && response.data.length > 0) {
+                                    console.log('Productos en primera oferta:', response.data[0].productos);
+                                }
+                                resolve(response);
+                            },
+                            error: (error) => {
+                                console.error('Error:', error); // Para debugging
+                                reject(error);
+                            }
+                        });
+                });
+
+                if (response && response.data) {
+                    this.offers = response.data;
+                    console.log('Ofertas cargadas:', this.offers); // Para debugging
+                }
+
+            } catch (error) {
+                console.error('Error loading offers:', error);
+                nsSnackBar.error(__('No se pudieron cargar las ofertas')).subscribe();
+            } finally {
+                this.loadingOffers = false;
+            }
+        },
+
+        formatDate(date: string) {
+            return new Date(date).toLocaleDateString();
+        },
+
+
+        async selectOffer(offer) {
+            try {
+                // Verificar si todos los productos de la oferta están en el carrito
+                const cartProducts = this.products;
+                const offerProducts = offer.productos;
+
+                const missingProducts = offerProducts.filter(offerProduct =>
+                    !cartProducts.some(cartProduct => cartProduct.id === offerProduct.id)
+                );
+
+                if (missingProducts.length > 0) {
+                    // Si faltan productos, mostrar cuáles son
+                    const missingProductNames = missingProducts.map(p => p.name).join(', ');
+                    nsSnackBar.error(
+                        __(`Por favor, añade los siguientes productos al carrito primero: ${missingProductNames}`)
+                    ).subscribe();
+                    return;
+                }
+
+                // Aplicar el descuento
+                const order = { ...this.order };
+                order.discount_type = 'percentage';
+                order.discount_percentage = offer.porcentaje_descuento;
+                order.discount = (order.subtotal * offer.porcentaje_descuento) / 100;
+                order.applied_offer = offer.id; // Para referencia
+
+                // Actualizar el carrito
+                POS.order.next(order);
+                POS.refreshCart();
+
+                nsSnackBar.success(
+                    __('Offer applied successfully: ') + offer.nombre
+                ).subscribe();
+
+                // Volver a la vista del carrito
+                this.showOffers = false;
+
+            } catch (error) {
+                nsSnackBar.error(__('Unable to apply offer')).subscribe();
+            }
+        },
+
+        async applyOffer(offer) {
+            try {
+                // Verificar si los productos de la oferta están en el carrito
+                const cartProducts = this.products;
+                const offerProducts = offer.productos;
+
+                // Verificar si todos los productos de la oferta están en el carrito
+                const allProductsInCart = offerProducts.every(offerProduct =>
+                    cartProducts.some(cartProduct => cartProduct.id === offerProduct.id)
+                );
+
+                if (!allProductsInCart) {
+                    nsSnackBar.error(__('All offer products must be in cart')).subscribe();
+                    return;
+                }
+
+                // Aplicar el descuento
+                const discountPercentage = offer.porcentaje_descuento;
+
+                // Actualizar el descuento del carrito
+                const order = { ...this.order };
+                order.discount_type = 'percentage';
+                order.discount_percentage = discountPercentage;
+                order.discount = (order.subtotal * discountPercentage) / 100;
+
+                // Actualizar el carrito
+                POS.order.next(order);
+                POS.refreshCart();
+
+                nsSnackBar.success(__('Offer applied successfully')).subscribe();
+
+                // Volver a la vista del carrito
+                this.showOffers = false;
+
+            } catch (error) {
+                nsSnackBar.error(__('Unable to apply offer')).subscribe();
+            }
         }
     }
 }
