@@ -40,7 +40,7 @@ class TipoOfertaController extends Controller
                 'tipo' => [
                     'id' => $tipoOferta->id,
                     'nombre' => $tipoOferta->name,
-                    'descripcion' => $tipoOferta->description
+                    'descripcion' => $tipoOferta->descripcion
                 ]
             ]);
         }
