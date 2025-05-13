@@ -12,9 +12,7 @@ class TipoOferta extends Model
     protected $table = 'tipo_ofertas';
     protected $fillable = [
         'nombre',
-        'descripcion',
-        'cantidad_minima_productos',
-        'cantidad_maxima_productos'
+        'descripcion'
     ];
 
 }

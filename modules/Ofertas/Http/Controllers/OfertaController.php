@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Ofertas\Models\Oferta; // Asegúrate de usar el namespace del módulo
 use App\Models\Product; // Asegúrate de usar el namespace del modelo Product
+use Modules\Ofertas\Http\Controllers\TipoOfertaController;
 
 class OfertaController extends Controller
 {

@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('descripcion');
-            $table->integer('cantidad_minima_productos')->nullable();
-            $table->integer('cantidad_maxima_productos')->nullable();
         });
     }
 
