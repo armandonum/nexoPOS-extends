@@ -21,6 +21,9 @@ class Oferta extends Model
     protected $fillable = [
         'nombre',
         'precio_total',
+        'tipo_de_oferta_id',
+        'fecha_inicio',
+        'fecha_fin',
         'monto_total_productos',
         'porcentaje_descuento',
         'descripcion',

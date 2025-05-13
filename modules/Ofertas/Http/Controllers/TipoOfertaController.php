@@ -1,66 +1,56 @@
 <?php
 
-namespace App\Http\Controllers;
 
-// use App\Models\tipo_oferta;
-use Modules\Ofertas\Models\tipo_oferta;
+
+
+
+
+namespace Modules\Ofertas\Http\Controllers;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Ofertas\Models\TipoOferta;
 
 class TipoOfertaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public static function obtenerTodosTipoOferta()
     {
-        //
+        return TipoOferta::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public static function cargarFormularioTipoOferta()
     {
-        //
+        return view('Ofertas::crear_tipo_oferta', [
+            'title' => 'Crear Tipo de Oferta',
+            'description' => 'Crear un nuevo tipo de oferta',
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function almacenarTipoOferta(Request $request)
     {
-        //
-    }
+        $data = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string|max:255',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(tipo_oferta $tipo_oferta)
-    {
-        //
-    }
+        $tipoOferta = TipoOferta::create([
+            'nombre' => $data['nombre'],
+            'descripcion' => $data['descripcion'] ?? null
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(tipo_oferta $tipo_oferta)
-    {
-        //
-    }
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'mensaje' => 'Tipo de oferta creado exitosamente.',
+                'tipo' => [
+                    'id' => $tipoOferta->id,
+                    'nombre' => $tipoOferta->name,
+                    'descripcion' => $tipoOferta->descripcion
+                ]
+            ]);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, tipo_oferta $tipo_oferta)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(tipo_oferta $tipo_oferta)
-    {
-        //
+        return redirect()->route('ofertas.crear')->with('success', 'Tipo de oferta creado exitosamente.');
     }
 }
+
