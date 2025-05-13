@@ -18,59 +18,59 @@
             </div>
         @endif
 
-        <div class="card bg-blue-100 shadow-lg rounded-lg border-0">
-            <div class="card-header bg-blue-900 text-white text-center p-4">
+        <div class="card shadow-lg rounded-lg border-0" style="background-color: rgb(var(--box-background));">
+            <!-- <div class="card-header bg-blue-900 text-white text-center p-4">
                 <h3 class="mb-0 text-xl font-semibold">Crear Nueva Oferta</h3>
-            </div>
+            </div> -->
             <div class="card-body p-6">
-                <p class="text-gray-600 mb-6">Selecciona los productos que deseas incluir en la oferta.</p>
+                <p class=" p-4 text-gray-600 ">Selecciona los productos que deseas incluir en la oferta.</p>
 
                 <form method="POST" action="{{ route('ofertas.store') }}" class="space-y-6">
                     @csrf
 
                     <div class="flex flex-col md:flex-row gap-6">
-                        <div class="w-full md:w-1/2">
-                            <div class="overflow-x-auto rounded-lg shadow-md bg-white">
-                                <table class="min-w-full divide-y divide-gray-300">
-                                    <thead class="bg-gray-100">
+                        <div class="w-full md:w-1/2 p-4">
+                            <div class="overflow-x-auto rounded-lg shadow-md bg-white p-4 border-gray-200">
+                                <table class="w-3/4 divide-y divide-gray-300">
+                                    <thead class="bg-gray-100 p-4">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                <div class="flex items-center space-x-2">
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <div class="flex items-center space-x-2 p-4">
                                                     <span>Seleccionar</span>
                                                 </div>
                                             </th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th class="px-6 p-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Nombre
                                             </th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th class="px-6 py-3 p-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Precio
                                             </th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tipo
+                                            <th class="px-6 py-3 p-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Descripcion
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
                                         @foreach($products as $product)
                                             <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <td class="px-6 p-4 whitespace-nowrap text-sm text-gray-500 ">
                                                     <div class="flex items-center space-x-2">
                                                         <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-400 rounded focus:ring-blue-500 focus:ring-2 product-checkbox pl-10" name="productos_seleccionados[]" value="{{ $product->id }}" data-precio="{{ $product->tax_value }}" @if(is_array(old('productos_seleccionados')) && in_array($product->id, old('productos_seleccionados'))) checked @elseif(isset($selectedProducts) && in_array($product->id, $selectedProducts)) checked @endif>
                                                     </div>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                <td class="px-6 p-4 whitespace-nowrap">
                                                     <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
                                                 </td>
                                                 @php
                                                     $unidad = $product->unit_quantities->first();
                                                 @endphp
-                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                <td class="px-6 p-4 whitespace-nowrap">
                                                     <div class="text-sm text-green-600">
                                                     ${{ $unidad ? number_format($unidad->sale_price, 2) : 'N/A' }}
                                                     </div>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
-                                                    <div class="text-sm text-indigo-600">{{ $product->type }}</div>
+                                                <td class="px-6 p-4 whitespace-nowrap">
+                                                    <div class="text-sm text-indigo-600">{{ $product->description }}</div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -79,28 +79,28 @@
                             </div>
                         </div>
 
-                        <div class="w-full md:w-1/2">
+                        <div class="w-full md:w-1/2 p-4">
                             <div class="space-y-6 bg-white p-4 rounded-lg shadow-md">
                                 <h1 class="text-xl font-bold text-blue-900">Detalles de la Oferta</h1>
 
                                 <div class="space-y-4">
-                                    <div>
+                                    <div class="p-4">
                                         <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                         <input type="text" name="nombre" id="nombre" placeholder="Nombre de la oferta" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" value="{{ old('nombre') }}" required>
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div>
+                                        <div class="p-4">
                                             <label for="precioTotalCalculado" class="block text-sm font-medium text-gray-700">Suma Productos ($)</label>
                                             <input type="number" id="precioTotalCalculado" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-100">
                                         </div>
-                                        <div>
+                                        <div class="p-4">
                                             <label for="porcentaje_descuento" class="block text-sm font-medium text-gray-700">Descuento (%)</label>
                                             <input type="number" name="porcentaje_descuento" id="descuento" placeholder="0.00" step="0.01" min="0" max="100" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ old('porcentaje_descuento', 0) }}" required>
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div class="p-4">
                                         <label for="precio_total_oferta" class="block text-sm font-medium text-gray-700">Precio Final Oferta ($)</label>
                                         <input type="number" name="precio_total_oferta" id="precioFinalOferta" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-100">
                                     </div>
@@ -109,14 +109,14 @@
                                     <input type="hidden" name="monto_total_productos_sin_descuento" id="montoTotalProductosSinDescuento">
 
 
-                                    <div>
+                                    <div class="p-4">
                                         <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
                                         <textarea name="descripcion" id="descripcion" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('descripcion') }}</textarea>
                                     </div>
 
-                                    <div>
+                                    <div class="p-4">
                                         <label for="tipo_oferta_id" class="block text-sm font-medium text-gray-700">Tipo de Oferta</label>
-                                        <div class="flex items-center space-x-2">
+                                        <div class="flex items-center gap-2">
                                             <select
                                                 name="tipo_oferta_id"
                                                 id="tipo_oferta_id"
@@ -138,7 +138,7 @@
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div class="p-4">
                                         <h2 class="text-lg font-semibold text-blue-900 mt-3">Productos Seleccionados</h2>
                                         <ul id="productosSeleccionadosLista" class="list-disc pl-5 text-gray-700 max-h-32 overflow-y-auto">
                                             {{-- Los productos se listarán aquí por JS --}}
@@ -147,7 +147,7 @@
                                 </div>
 
                                <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-success d-inline-flex align-items-center px-4 py-2">
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md text-sm whitespace-nowrap">
                                         Crear Oferta
                                     </button>
                                 </div>
