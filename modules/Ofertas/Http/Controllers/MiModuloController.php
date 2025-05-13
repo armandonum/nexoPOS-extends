@@ -5,6 +5,7 @@ namespace Modules\Ofertas\Http\Controllers;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Dashboard\ProductsController;
+use Modules\Ofertas\Http\Controllers\TipoOfertaController;
 
 class MiModuloController extends Controller
 {
