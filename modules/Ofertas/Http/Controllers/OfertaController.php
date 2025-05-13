@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Ofertas\Models\Oferta; // Asegúrate de usar el namespace del módulo
 use App\Models\Product; // Asegúrate de usar el namespace del modelo Product
+use App\Http\Controllers\Dashboard\ProductsController;
 use Modules\Ofertas\Http\Controllers\TipoOfertaController;
 
 class OfertaController extends Controller
@@ -18,11 +19,13 @@ class OfertaController extends Controller
         // $products = app('Modules\Ofertas\Http\Controllers\MiModuloController')->obtenerProductos();
         //$products = Product::all(); // Obtener todos los productos de la base de datos
         $products = Product::with('unit_quantities')->get();
+        $tipo_ofertas = TipoOfertaController::obtenerTodosTipoOferta();
         $selectedProducts = session()->get('selected_products', []);
         return view('Ofertas::crear_oferta', [
             'title' => 'Crear Oferta',
             'description' => 'Crear una nueva oferta',
             'products' => $products,
+            'tipo_ofertas' => $tipo_ofertas,
             'selectedProducts' => $selectedProducts
         ]);
     }
@@ -37,6 +40,7 @@ class OfertaController extends Controller
             'precio_total' => 'required|numeric',
             'monto_total_productos' => 'required|numeric',
             'porcentaje_descuento' => 'required|numeric|min:0|max:100',
+            'tipo_de_oferta_id' => 'required|exists:tipo_ofertas,id',
             'descripcion' => 'nullable|string',
             'productos' => 'required|array', // IDs de productos seleccionados
         ]);
@@ -47,6 +51,7 @@ class OfertaController extends Controller
             'precio_total' => $request->precio_total,
             'monto_total_productos' => $request->monto_total_productos,
             'porcentaje_descuento' => $request->porcentaje_descuento,
+            'tipo_de_oferta_id' => $request->tipo_de_oferta_id,
             'descripcion' => $request->descripcion,
         ]);
 

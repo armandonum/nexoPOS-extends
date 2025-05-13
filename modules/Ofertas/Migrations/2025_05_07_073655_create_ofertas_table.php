@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('nombre');
             $table->decimal('precio_total', 8, 2);
             $table->decimal( 'tipo_de_oferta_id')->nullable();
-            $table->date('fecha_inicio')->nullable();
-            $table->date('fecha_fin')->nullable();
+            //$table->date('fecha_inicio')->nullable();
+            //$table->date('fecha_fin')->nullable();
             $table->decimal('monto_total_productos', 8, 2);
             $table->decimal('porcentaje_descuento', 5, 2);
             $table->string('descripcion');
