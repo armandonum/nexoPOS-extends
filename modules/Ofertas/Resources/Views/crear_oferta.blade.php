@@ -48,9 +48,20 @@
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                <!-- <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="text-sm text-green-600">$ {{ number_format($product->tax_value, 2) }}</div>
+                                                </td> -->
+                                                @php
+                                                    $unidad = $product->unit_quantities->first();
+                                                @endphp
+
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-green-600">
+                                                    ${{ $unidad ? number_format($unidad->sale_price, 2) : 'N/A' }}
+                                                    </div>
                                                 </td>
+                                                    
+
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="text-sm text-indigo-600">{{ $product->type }}</div>
                                                 </td>

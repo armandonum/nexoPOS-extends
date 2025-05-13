@@ -15,7 +15,8 @@ class OfertaController extends Controller
     public function create()
     {
         // $products = app('Modules\Ofertas\Http\Controllers\MiModuloController')->obtenerProductos();
-        $products = Product::all(); // Obtener todos los productos de la base de datos
+        //$products = Product::all(); // Obtener todos los productos de la base de datos
+        $products = Product::with('unit_quantities')->get();
         $selectedProducts = session()->get('selected_products', []);
         return view('Ofertas::crear_oferta', [
             'title' => 'Crear Oferta',
