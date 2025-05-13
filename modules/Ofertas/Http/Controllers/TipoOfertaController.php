@@ -1,5 +1,10 @@
 <?php
 
+
+
+
+
+
 namespace Modules\Ofertas\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -48,3 +53,4 @@ class TipoOfertaController extends Controller
         return redirect()->route('ofertas.crear')->with('success', 'Tipo de oferta creado exitosamente.');
     }
 }
+
