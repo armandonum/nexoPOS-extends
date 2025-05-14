@@ -102,7 +102,7 @@
 
                                     <div class="p-4">
                                         <label for="precio_total_oferta" class="block text-sm font-medium text-gray-700">Precio Final Oferta ($)</label>
-                                        <input type="number" name="precio_total_oferta" id="precioFinalOferta" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-100">
+                                        <input type="number" name="precio_total" id="precioFinalOferta" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-100">
                                     </div>
                                     
                                     {{-- Hidden input para el monto total de productos sin descuento, si es necesario para el backend --}}
@@ -113,7 +113,11 @@
                                         <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
                                         <textarea name="descripcion" id="descripcion" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('descripcion') }}</textarea>
                                     </div>
+                                        <div>
+                                        <input type="date" name="fecha_inicio" required>
+<input type="date" name="fecha_final" required>
 
+                                        </div>
                                     <div class="p-4">
                                         <label for="tipo_oferta_id" class="block text-sm font-medium text-gray-700">Tipo de Oferta</label>
                                         <div class="flex items-center gap-2">
@@ -243,7 +247,7 @@
                     idsProductos.forEach(id => {
                         const hiddenInput = document.createElement('input');
                         hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'productos_seleccionados_ids[]'; // Nombre para el array en el backend
+                        hiddenInput.name = 'productos[]'; // Nombre para el array en el backend
                         hiddenInput.value = id;
                         hiddenProductInputsContainer.appendChild(hiddenInput);
                     });
