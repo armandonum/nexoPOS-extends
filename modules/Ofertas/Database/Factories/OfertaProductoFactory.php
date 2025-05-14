@@ -9,9 +9,7 @@ use Modules\Ofertas\Models\OfertaProducto;
 use App\Models\Product;
 
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\OfertaProducto>
- */
+
 class OfertaProductoFactory extends Factory
 {
     /**
@@ -22,10 +20,7 @@ class OfertaProductoFactory extends Factory
     protected $model = OfertaProducto::class;
     public function definition(): array
     {
-        // id (PK)
-        // oferta_id (FK a ofertas)
-        // producto_id (FK a productos)
-
+    
         $product = Product::all()->random();
         $oferta = Oferta::all()->random();
 

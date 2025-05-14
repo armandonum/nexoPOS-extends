@@ -7,6 +7,7 @@ use App\Events\ProductAfterDeleteEvent;
 use App\Events\ProductBeforeDeleteEvent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Ofertas\Models\Oferta;
 
 /**
  * @property string   $id
@@ -377,9 +378,10 @@ class Product extends NsModel
         return $query->where( 'searchable', $attribute );
     }
 
+    //! ofertas
     public function ofertas()
     {
-        return $this->belongsToMany(Oferta::class, 'ofertas_productos', 'producto_id', 'oferta_id');
+        return $this->belongsToMany(Oferta::class, 'oferta_productos', 'oferta_id', 'producto_id');
     }
     
 }

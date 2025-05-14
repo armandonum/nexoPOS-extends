@@ -4,50 +4,73 @@
     @include('common.dashboard.title')
 
     <div class="container mx-auto my-5">
-        <div class="card bg-white shadow-lg rounded-lg border-0">
-            <div class="card-header bg-primary text-white text-center p-4">
-                <h3 class="mb-0">Crear Nueva Oferta</h3>
+        {{-- Sección para mostrar mensajes flash de sesión --}}
+        @if (session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Éxito!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
             </div>
-            <div class="card-body p-6">
-                <p class="text-gray-500 mb-4">Selecciona los productos que deseas incluir en la oferta.</p>
+        @endif
+        @if (session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
 
-                <form method="POST" action="{{ route('ofertas.store') }}">
+        <div class="card shadow-lg rounded-lg border-0" style="background-color: rgb(var(--box-background));">
+            <!-- <div class="card-header bg-blue-900 text-white text-center p-4">
+                <h3 class="mb-0 text-xl font-semibold">Crear Nueva Oferta</h3>
+            </div> -->
+            <div class="card-body p-6">
+                <p class=" p-4 text-gray-600 ">Selecciona los productos que deseas incluir en la oferta.</p>
+
+                <form method="POST" action="{{ route('ofertas.store') }}" class="space-y-6">
                     @csrf
 
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <div class="w-full md:w-1/2">
-                            <div class="overflow-x-auto rounded-lg shadow-md">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="w-full md:w-1/2 p-4">
+                            <div class="overflow-x-auto rounded-lg shadow-md bg-white p-4 border-gray-200">
+                                <table class="w-3/4 divide-y divide-gray-300">
+                                    <thead class="bg-gray-100 p-4">
                                         <tr>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Seleccionar
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                <div class="flex items-center space-x-2 p-4">
+                                                    <span>Seleccionar</span>
+                                                </div>
                                             </th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th class="px-6 p-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Nombre
                                             </th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <th class="px-6 py-3 p-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Precio
                                             </th>
-                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Tipo
+                                            <th class="px-6 py-3 p-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Descripcion
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
                                         @foreach($products as $product)
-                                            <tr class="animate__animated animate__fadeIn">
-                                                <td class="px-6 py-4 whitespace-nowrap">
-                                                    <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 product-checkbox" name="productos[]" value="{{ $product->id }}" data-precio="{{ $product->tax_value }}" @if(in_array($product->id, $selectedProducts)) checked @endif>
+                                            <tr>
+                                                <td class="px-6 p-4 whitespace-nowrap text-sm text-gray-500 ">
+                                                    <div class="flex items-center space-x-2">
+                                                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 border-gray-400 rounded focus:ring-blue-500 focus:ring-2 product-checkbox pl-10" name="productos_seleccionados[]" value="{{ $product->id }}" data-precio="{{ $product->tax_value }}" @if(is_array(old('productos_seleccionados')) && in_array($product->id, old('productos_seleccionados'))) checked @elseif(isset($selectedProducts) && in_array($product->id, $selectedProducts)) checked @endif>
+                                                    </div>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                <td class="px-6 p-4 whitespace-nowrap">
                                                     <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
-                                                    <div class="text-sm text-green-600">$ {{ number_format($product->tax_value, 2) }}</div>
+                                                @php
+                                                    $unidad = $product->unit_quantities->first();
+                                                @endphp
+                                                <td class="px-6 p-4 whitespace-nowrap">
+                                                    <div class="text-sm text-green-600">
+                                                    ${{ $unidad ? number_format($unidad->sale_price, 2) : 'N/A' }}
+                                                    </div>
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
-                                                    <div class="text-sm text-indigo-600">{{ $product->type }}</div>
+                                                <td class="px-6 p-4 whitespace-nowrap">
+                                                    <div class="text-sm text-indigo-600">{{ $product->description }}</div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -56,117 +79,189 @@
                             </div>
                         </div>
 
-                        <div class="w-full md:w-1/2">
-                            <div class="space-y-4">
-                                <h1 class="text-xl font-bold">Detalles de la Oferta</h1>
+                        <div class="w-full md:w-1/2 p-4">
+                            <div class="space-y-6 bg-white p-4 rounded-lg shadow-md">
+                                <h1 class="text-xl font-bold text-blue-900">Detalles de la Oferta</h1>
 
-                                <div class="space-y-2">
-                                    <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                                    <input type="text" name="nombre" id="nombre" placeholder="Nombre" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="precio_total" class="block text-sm font-medium text-gray-700">Precios Total de la Oferta</label>
-                                        <input type="number" name="precio_total" id="precioTotal" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <div class="space-y-4">
+                                    <div class="p-4">
+                                        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                                        <input type="text" name="nombre" id="nombre" placeholder="Nombre de la oferta" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" value="{{ old('nombre') }}" required>
                                     </div>
-                                    <div>
-                                        <label for="porcentaje_descuento" class="block text-sm font-medium text-gray-700">Porcentaje de Descuento</label>
-                                        <input type="number" name="porcentaje_descuento" id="descuento" placeholder="0.00" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="calcularTotales()">
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="p-4">
+                                            <label for="precioTotalCalculado" class="block text-sm font-medium text-gray-700">Suma Productos ($)</label>
+                                            <input type="number" id="precioTotalCalculado" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-100">
+                                        </div>
+                                        <div class="p-4">
+                                            <label for="porcentaje_descuento" class="block text-sm font-medium text-gray-700">Descuento (%)</label>
+                                            <input type="number" name="porcentaje_descuento" id="descuento" placeholder="0.00" step="0.01" min="0" max="100" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ old('porcentaje_descuento', 0) }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4">
+                                        <label for="precio_total_oferta" class="block text-sm font-medium text-gray-700">Precio Final Oferta ($)</label>
+                                        <input type="number" name="precio_total" id="precioFinalOferta" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none bg-gray-100">
+                                    </div>
+                                    
+                                    {{-- Hidden input para el monto total de productos sin descuento, si es necesario para el backend --}}
+                                    <input type="hidden" name="monto_total_productos_sin_descuento" id="montoTotalProductosSinDescuento">
+
+
+                                    <div class="p-4">
+                                        <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+                                        <textarea name="descripcion" id="descripcion" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('descripcion') }}</textarea>
+                                    </div>
+                                        <div>
+                                        <input type="date" name="fecha_inicio" required>
+<input type="date" name="fecha_final" required>
+
+                                        </div>
+                                    <div class="p-4">
+                                        <label for="tipo_oferta_id" class="block text-sm font-medium text-gray-700">Tipo de Oferta</label>
+                                        <div class="flex items-center gap-2">
+                                            <select
+                                                name="tipo_oferta_id"
+                                                id="tipo_oferta_id"
+                                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black hover:text-black bg-white hover:bg-white"
+                                                required
+                                            >
+                                                <option value="" disabled {{ old('tipo_oferta_id') ? '' : 'selected' }}>Seleccione un tipo</option>
+                                                @if($tipo_ofertas->isNotEmpty())
+                                                    @foreach($tipo_ofertas as $tipo)
+                                                        <option value="{{ $tipo->id }}">{{ $tipo->nombre }} - {{ $tipo->descripcion }}</option>
+                                                    @endforeach
+                                                @else
+                                                    <option value="" disabled>No hay tipos de oferta disponibles</option>
+                                                @endif
+                                            </select>
+                                            <a href="{{ route('tipo_ofertas.crear') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md text-sm whitespace-nowrap">
+                                                Agregar
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4">
+                                        <h2 class="text-lg font-semibold text-blue-900 mt-3">Productos Seleccionados</h2>
+                                        <ul id="productosSeleccionadosLista" class="list-disc pl-5 text-gray-700 max-h-32 overflow-y-auto">
+                                            {{-- Los productos se listarán aquí por JS --}}
+                                        </ul>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label for="total_pagar" class="block text-sm font-medium text-gray-700">Monto total de los productos de la oferta</label>
-                                    <input type="number" name="monto_total_productos" id="montoTotal" readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                               <div class="text-center mt-4">
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md text-sm whitespace-nowrap">
+                                        Crear Oferta
+                                    </button>
                                 </div>
 
-                                <div>
-                                    <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
-                                    <textarea name="descripcion" id="descripcion" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                                </div>
-
-                                <div>
-                                    <h1 class="text-xl font-bold">Lista de Productos Seleccionados</h1>
-                                    <ul id="productosSeleccionados" class="list-disc pl-5"></ul>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8">
-                                <button type="submit" class="btn btn-success btn-lg inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-black bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
-                                    </svg>
-                                    Crear Oferta
-                                </button>
                             </div>
                         </div>
                     </div>
+                     {{-- Inputs hidden para los IDs de los productos seleccionados se añadirán aquí por JS --}}
                 </form>
             </div>
         </div>
     </div>
 
     @push('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const checkboxes = document.querySelectorAll('.product-checkbox');
                 const descuentoInput = document.getElementById('descuento');
-                const precioTotalInput = document.getElementById('precioTotal');
-                const montoTotalInput = document.getElementById('montoTotal');
-                const productosSeleccionadosList = document.getElementById('productosSeleccionados');
+                const precioTotalCalculadoInput = document.getElementById('precioTotalCalculado');
+                const precioFinalOfertaInput = document.getElementById('precioFinalOferta');
+                const montoTotalProductosSinDescuentoInput = document.getElementById('montoTotalProductosSinDescuento');
+
+                const productosSeleccionadosList = document.getElementById('productosSeleccionadosLista');
+                const form = document.querySelector('form');
+                let hiddenProductInputsContainer = document.getElementById('hidden-product-inputs-container');
+                if (!hiddenProductInputsContainer) {
+                    hiddenProductInputsContainer = document.createElement('div');
+                    hiddenProductInputsContainer.id = 'hidden-product-inputs-container';
+                    form.appendChild(hiddenProductInputsContainer);
+                }
+
 
                 function calcularTotales() {
-                    let montoTotal = 0;
-                    let productosSeleccionados = [];
+                    let sumaPreciosProductos = 0;
+                    let productosParaLista = [];
+                    let idsProductosSeleccionados = [];
 
                     checkboxes.forEach(cb => {
                         if (cb.checked) {
-                            const precio = parseFloat(cb.getAttribute('data-precio')) || 0;
-                            montoTotal += precio;
-                            productosSeleccionados.push({
-                                id: cb.value,
-                                name: cb.closest('tr').querySelector('td:nth-child(2) div').textContent.trim()
-                            });
+                            const precioAttr = cb.getAttribute('data-precio');
+                            // Encontrar el precio de la columna 'Precio' de la fila actual
+                            const fila = cb.closest('tr');
+                            const celdaPrecio = fila.querySelector('td:nth-child(3) div'); // Asumiendo que el precio está en la 3ra celda (td)
+                            
+                            let precioProducto = 0;
+                            if (celdaPrecio && celdaPrecio.textContent) {
+                                const textoPrecio = celdaPrecio.textContent.replace('$', '').trim();
+                                precioProducto = parseFloat(textoPrecio) || 0;
+                            } else {
+                                // Fallback si la estructura es diferente o el precio no se encuentra
+                                precioProducto = parseFloat(precioAttr) || 0; 
+                            }
+                            
+                            sumaPreciosProductos += precioProducto;
+                            productosParaLista.push(cb.closest('tr').querySelector('td:nth-child(2) div').textContent.trim());
+                            idsProductosSeleccionados.push(cb.value);
                         }
                     });
 
-                    const descuento = parseFloat(descuentoInput.value) || 0;
-                    const precioTotal = montoTotal * (1 - descuento / 100);
+                    const descuentoPorcentaje = parseFloat(descuentoInput.value) || 0;
+                    const montoDescuento = sumaPreciosProductos * (descuentoPorcentaje / 100);
+                    const precioFinalConDescuento = sumaPreciosProductos - montoDescuento;
 
-                    montoTotalInput.value = montoTotal.toFixed(2);
-                    precioTotalInput.value = precioTotal.toFixed(2);
-                    actualizarLista(productosSeleccionados);
+                    precioTotalCalculadoInput.value = sumaPreciosProductos.toFixed(2);
+                    precioFinalOfertaInput.value = precioFinalConDescuento.toFixed(2);
+                    montoTotalProductosSinDescuentoInput.value = sumaPreciosProductos.toFixed(2);
 
-                    // Actualizar el campo oculto con los IDs seleccionados
-                    const hiddenInputs = document.querySelectorAll('input[name="productos[]"][type="hidden"]');
-                    hiddenInputs.forEach(input => input.remove());
-                    productosSeleccionados.forEach(prod => {
+
+                    actualizarListaVisual(productosParaLista);
+                    actualizarHiddenInputsProductos(idsProductosSeleccionados);
+                }
+
+                function actualizarListaVisual(productosNombres) {
+                    productosSeleccionadosList.innerHTML = '';
+                    if (productosNombres.length === 0) {
+                        const li = document.createElement('li');
+                        li.textContent = 'Ningún producto seleccionado.';
+                        li.className = 'text-gray-500 italic';
+                        productosSeleccionadosList.appendChild(li);
+                    } else {
+                        productosNombres.forEach(nombre => {
+                            const li = document.createElement('li');
+                            li.textContent = nombre;
+                            productosSeleccionadosList.appendChild(li);
+                        });
+                    }
+                }
+                
+                function actualizarHiddenInputsProductos(idsProductos) {
+                    // Limpiar inputs anteriores
+                    hiddenProductInputsContainer.innerHTML = '';
+
+                    idsProductos.forEach(id => {
                         const hiddenInput = document.createElement('input');
                         hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'productos[]';
-                        hiddenInput.value = prod.id;
-                        document.querySelector('form').appendChild(hiddenInput);
+                        hiddenInput.name = 'productos[]'; // Nombre para el array en el backend
+                        hiddenInput.value = id;
+                        hiddenProductInputsContainer.appendChild(hiddenInput);
                     });
                 }
 
-                function actualizarLista(productos) {
-                    productosSeleccionadosList.innerHTML = '';
-                    productos.forEach(prod => {
-                        const li = document.createElement('li');
-                        li.textContent = `${prod.name} (ID: ${prod.id})`;
-                        productosSeleccionadosList.appendChild(li);
-                    });
-                }
-
-                // Agregar eventos a los checkboxes y al input de descuento
                 checkboxes.forEach(cb => {
                     cb.addEventListener('change', calcularTotales);
                 });
-                descuentoInput.addEventListener('input', calcularTotales);
 
-                // Calcular inicial si hay productos seleccionados al cargar
-                calcularTotales();
+                if(descuentoInput) {
+                    descuentoInput.addEventListener('input', calcularTotales);
+                }
+
+                calcularTotales(); // Calcular al cargar la página
             });
         </script>
     @endpush
