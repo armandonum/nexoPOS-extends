@@ -19,8 +19,7 @@ class OfertaController extends Controller
      */
     public function create()
     {
-        // $products = app('Modules\Ofertas\Http\Controllers\MiModuloController')->obtenerProductos();
-        //$products = Product::all(); // Obtener todos los productos de la base de datos
+
         $products = Product::with('unit_quantities')->get();
         $tipo_ofertas = TipoOfertaController::obtenerTodosTipoOferta();
         $selectedProducts = session()->get('selected_products', []);
@@ -35,7 +34,8 @@ class OfertaController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */public function store(Request $request)
+     */
+    public function store(Request $request)
 {
     try {
         $request->validate([
@@ -76,11 +76,11 @@ class OfertaController extends Controller
 
 
 
-    // PARA OBTENER OFERTAS ACTIVAS
+
     public function getActiveOffers()
     {
         try {
-            // Añadir logging para debugging
+     
             Log::info('Iniciando getActiveOffers');
 
             $ofertas = Oferta::with(['products', 'tipoOferta'])
@@ -93,10 +93,10 @@ class OfertaController extends Controller
             Log::info('Productos en la primera oferta: ' . $ofertas->first()->products->count());
 
             $data = $ofertas->map(function ($oferta) {
-                $dias_restantes = now()->diffInDays($oferta->fecha_final); // Calcular los días restantes
-                $dias_restantes = $dias_restantes < 0 ? 0 : $dias_restantes; // Asegurarse de que no sea negativo
+                $dias_restantes = now()->diffInDays($oferta->fecha_final); 
+                $dias_restantes = $dias_restantes < 0 ? 0 : $dias_restantes; 
 
-                // Redondear a un entero los dias restantes     
+ 
                 $dias_restantes = ceil($dias_restantes);
                 return [
                     'id' => $oferta->id,
