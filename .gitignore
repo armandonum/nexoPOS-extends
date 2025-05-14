@@ -11,7 +11,7 @@ worker.log
 *.log
 *.ignore.*
 *.log.*
-
+public/*
 public/modules/*
 public/storage
 public/export/*

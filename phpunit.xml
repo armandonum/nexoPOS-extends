@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd" 
-  bootstrap="vendor/autoload.php" 
-  colors="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory="tests/.phpunit.cache"
+         executionOrder="depends,defects"
+         requireCoverageMetadata="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         failOnRisky="true"
+         failOnWarning="true">
   <testsuites>
+    <testsuite name="Unit Tests">
+      <directory suffix="Test.php">./tests/Unit</directory>
+    </testsuite>
     <testsuite name="Sequential-1">
       <directory suffix="TestLanguageFileValidity.php">./tests/Feature</directory>
       <directory suffix="CreateTestDatabaseSQLite.php">./tests/Feature</directory>
@@ -15,7 +25,6 @@
       <directory suffix="CrudTest.php">./tests/Feature</directory>
       <directory suffix="FieldsTest.php">./tests/Feature</directory>
       <directory suffix="UploadModuleTest.php">./tests/Feature</directory>
-      <directory suffix="FieldsTest.php">./tests/Feature</directory>
       <directory suffix="TestSetOrderType.php">./tests/Feature</directory>
       <directory suffix="OptionSavingTest.php">./tests/Feature</directory>
       <directory suffix="TestOtherGetRoutes.php">./tests/Feature</directory>
@@ -23,7 +32,6 @@
       <directory suffix="RefreshReportForPassDaysTest.php">./tests/Feature</directory>
       <directory suffix="RenderCrudFormTest.php">./tests/Feature</directory>
       <directory suffix="SaveSettingsTest.php">./tests/Feature</directory>
-      <directory suffix="CrudTest.php">./tests/Feature</directory>
       <directory suffix="CrudEditEntitiesTest.php">./tests/Feature</directory>
       <directory suffix="AuthenticationTest.php">./tests/Feature</directory>
     </testsuite>
@@ -70,30 +78,30 @@
   <coverage>
     <report>
       <html outputDirectory="tests/.coverage"/>
+      <text outputFile="tests/coverage.txt"/>
     </report>
+    <include>
+      <directory suffix=".php">app</directory>
+      <directory suffix=".php">Modules</directory>
+    </include>
   </coverage>
   <php>
-    <server name="APP_ENV" value="TESTING"/>
+    <server name="APP_ENV" value="testing"/>
     <server name="BCRYPT_ROUNDS" value="4"/>
     <server name="CACHE_DRIVER" value="array"/>
     <server name="DB_CONNECTION" value="sqlite"/>
-    <server name="DB_DATABASE" value="tests/database.sqlite"/>
-    <server name="DB_HOST" value=""/>
-    <server name="DB_USERNAME" value=""/>
-    <server name="DB_PASSWORD" value=""/>
+    <server name="DB_DATABASE" value=":memory:"/>
     <server name="DB_PREFIX" value="ns_"/>
     <server name="MAIL_MAILER" value="array"/>
     <server name="QUEUE_CONNECTION" value="sync"/>
     <server name="SESSION_DRIVER" value="array"/>
-    <server name="TELESCOPE_ENABLED" value="FALSE"/>
+    <server name="TELESCOPE_ENABLED" value="false"/>
     <server name="BROADCAST_DRIVER" value="log"/>
     <server name="SANCTUM_STATEFUL_DOMAINS" value="nexopos-v4.std"/>
     <server name="SESSION_DOMAIN" value="nexopos-v4.std"/>
     <server name="NS_VERSION" value="false"/>
   </php>
-  <source>
-    <include>
-      <directory>app</directory>
-    </include>
-  </source>
+  <listeners>
+    <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener"/>
+  </listeners>
 </phpunit>
