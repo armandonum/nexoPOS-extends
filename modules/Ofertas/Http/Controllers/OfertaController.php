@@ -4,11 +4,10 @@ namespace Modules\Ofertas\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Ofertas\Models\Oferta; // Asegúrate de usar el namespace del módulo
-use App\Models\Product; // Asegúrate de usar el namespace del modelo Product
+use Modules\Ofertas\Models\Oferta; 
+use App\Models\Product; 
 
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Dashboard\ProductsController;
 use Modules\Ofertas\Http\Controllers\TipoOfertaController;
 
 
@@ -85,7 +84,7 @@ class OfertaController extends Controller
 
             $ofertas = Oferta::with(['products', 'tipoOferta'])
                 ->where('estado', true)
-                ->where('fecha_inicio', '<=', now())
+                // ->where('fecha_inicio', '<=', now())
                 ->where('fecha_final', '>=', now())
                 ->get();
 
@@ -114,7 +113,7 @@ class OfertaController extends Controller
                         return [
                             'id' => $product->id,
                             'name' => $product->name,
-                            'price' => floatval($product->tax_value),
+                            'price' => floatval($product->unit_quantities->first()->sale_price),
                             'barcode' => $product->barcode
                         ];
                     })->toArray()
