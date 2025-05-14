@@ -35,41 +35,44 @@ class OfertaController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
+     */public function store(Request $request)
+{
+    try {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'precio_total' => 'required|numeric',
-            'monto_total_productos' => 'required|numeric',
+            'monto_total_productos_sin_descuento' => 'required|numeric',
             'porcentaje_descuento' => 'required|numeric|min:0|max:100',
-            'tipo_de_oferta_id' => 'required|exists:tipo_ofertas,id',
+            'tipo_oferta_id' => 'required|exists:tipo_ofertas,id',
+            'fecha_inicio' => 'required|date',
+            'fecha_final' => 'required|date|after_or_equal:fecha_inicio',
             'descripcion' => 'nullable|string',
-            'productos' => 'required|array', // IDs de productos seleccionados
+            'productos' => 'required|array',
+            'productos.*' => 'exists:nexopos_products,id',
         ]);
 
-        // Crear la oferta
         $oferta = Oferta::create([
             'nombre' => $request->nombre,
             'precio_total' => $request->precio_total,
-            'monto_total_productos' => $request->monto_total_productos,
+            'monto_total_productos' => $request->monto_total_productos_sin_descuento,
             'porcentaje_descuento' => $request->porcentaje_descuento,
-            'tipo_de_oferta_id' => $request->tipo_de_oferta_id,
+            'tipo_oferta_id' => $request->tipo_oferta_id,
+            'fecha_inicio' => $request->fecha_inicio,
+            'fecha_final' => $request->fecha_final,
             'descripcion' => $request->descripcion,
         ]);
 
-        // Asociar los productos seleccionados a la oferta en la tabla oferta_productos
-        $productIDs = $request->input('productos', []);
-        // $productIds = array_unique($request->input('productos', []));
-        // $oferta->products()->attach($productIDs); // Inserta los registros en oferta_productos
-        $oferta->products()->sync($productIDs); // Inserta los registros en oferta_productos
+        $oferta->products()->sync($request->productos);
 
-        // Limpiar la sesión después de guardar
         session()->forget('selected_products');
 
-        return redirect()->route('ofertas.crear')->with('success', 'Oferta creada con éxito y productos asociados');
-    }
+        return redirect()->route('ofertas.crear')->with('success', 'Oferta creada con éxito y productos asociados.');
 
+    } catch (\Exception $e) {
+        Log::error('Error al crear oferta: ' . $e->getMessage());
+        return back()->with('error', 'Error al crear la oferta: ' . $e->getMessage())->withInput();
+    }
+}
 
 
 
