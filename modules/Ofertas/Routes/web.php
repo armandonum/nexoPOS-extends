@@ -17,7 +17,7 @@ Route::get('/tipo_ofertas/crear', [TipoOfertaController::class, 'cargarFormulari
 Route::post('/tipo_ofertas', [TipoOfertaController::class, 'almacenarTipoOferta'])->name('tipo_ofertas.store');
 
 
-
+Route::post('/{id}/duplicate', [OfertaController::class, 'duplicate'])->name('ofertas.duplicate');
 
 
 Route::get('/ofertas_list', [OfertaController::class, 'index'])->name('ofertas.index');
@@ -31,3 +31,5 @@ Route::delete('/ofertas/{id}', [OfertaController::class, 'destroy'])->name('ofer
 
 Route::get('/tipo_ofertas/crear', [TipoOfertaController::class, 'cargarFormularioTipoOferta'])->name('tipo_ofertas.crear');
 Route::post('/tipo_ofertas', [TipoOfertaController::class, 'almacenarTipoOferta'])->name('tipo_ofertas.store');
+
+

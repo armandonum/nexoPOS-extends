@@ -234,5 +234,35 @@ class OfertaController extends Controller
         ]);
     }
 
+    public function duplicate($id)
+    {
+        try {
+            //oferta actual
+            $ofertaOriginal = Oferta::with(['products', 'tipoOferta'])->findOrFail($id);
+            
+            //duplicar
+            $nuevaOferta = $ofertaOriginal->replicate();
+            $nuevaOferta->nombre = "Copia de " . $ofertaOriginal->nombre;
+            $nuevaOferta->estado = false;
+            $nuevaOferta->created_at = now();
+            $nuevaOferta->updated_at = now();
+            
+            //guardar nueva oferta
+            $nuevaOferta->save();
+            $productosIds = $ofertaOriginal->products->pluck('id')->toArray();
+            $nuevaOferta->products()->sync($productosIds);
+
+            return redirect()->route('ofertas.index')
+                ->with('success', 'Oferta duplicada correctamente. La nueva oferta está inactiva.');
+
+        } catch (\Exception $e) {
+            Log::error('Error al duplicar oferta ID ' . $id . ': ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
+            return redirect()->route('ofertas.index')
+                ->with('error', 'Error al duplicar la oferta: ' . $e->getMessage());
+        }
+    }
+
    
 }
