@@ -83,6 +83,17 @@
                                                 <i class="bi bi-pencil"></i>
                                                 <span>Editar</span>
                                             </a>
+
+                                            <!--Boton duplicar oferta-->
+                                            <form action="{{ route('ofertas.duplicate', $oferta->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="px-4 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 rounded-full text-sm font-medium flex items-center space-x-1 transition-all duration-200">
+                                                    <i class="bi bi-files"></i>
+                                                    <span>Duplicar</span>
+                                                </button>
+                                            </form>
+
+                                            <!--Boton eliminar oferta-->
                                             <form action="{{ route('ofertas.destroy', $oferta->id) }}" method="POST"
                                                   onsubmit="return confirm('¿Estás seguro de eliminar esta oferta?')"
                                                   class="inline">
