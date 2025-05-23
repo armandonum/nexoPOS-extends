@@ -91,9 +91,9 @@ use Illuminate\Support\Facades\Gate;
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errData => {
-                            throw new Error(Respuesta de red no fue OK: ${response.statusText}. Mensaje del servidor: ${errData.message || (errData.error || 'No hay mensaje adicional')});
+                            throw new Error(`Respuesta de red no fue OK: ${response.statusText}. Mensaje del servidor: ${errData.message || (errData.error || 'No hay mensaje adicional')}`);
                         }).catch(() => {
-                            throw new Error(Respuesta de red no fue OK: ${response.statusText}. No se pudo parsear la respuesta de error.);
+                            throw new Error(`Respuesta de red no fue OK: ${response.statusText}. No se pudo parsear la respuesta de error.`);
                         });
                     }
                     return response.json();
