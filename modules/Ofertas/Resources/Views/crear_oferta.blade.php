@@ -113,11 +113,20 @@
                                         <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
                                         <textarea name="descripcion" id="descripcion" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('descripcion') }}</textarea>
                                     </div>
-                                        <div>
-                                        <input type="date" name="fecha_inicio" required>
-<input type="date" name="fecha_final" required>
-
+                                    <div class="p-4 flex flex-col md:flex-row gap-4 max-w-md mx-auto my-4">
+                                        <div class="flex flex-col w-full">
+                                            <label for="fecha_inicio" class="mb-1 text-gray-700 font-medium">Fecha de inicio</label>
+                                            <input type="date" id="fecha_inicio" name="fecha_inicio" required
+                                                class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
                                         </div>
+                                        <div class="flex flex-col w-full">
+                                            <label for="fecha_final" class="mb-1 text-gray-700 font-medium">Fecha final</label>
+                                            <input type="date" id="fecha_final" name="fecha_final" required
+                                                class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                                        </div>
+                                    </div>
+
+
                                     <div class="p-4">
                                         <label for="tipo_oferta_id" class="block text-sm font-medium text-gray-700">Tipo de Oferta</label>
                                         <div class="flex items-center gap-2">
