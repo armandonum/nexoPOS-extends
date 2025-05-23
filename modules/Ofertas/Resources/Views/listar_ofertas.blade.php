@@ -52,7 +52,7 @@
 
                     </div>
                     <div id="crud-buttons" class="-mx-1 flex flex-wrap w-full md:w-auto">
-                        <div class="px-1 flex items-center ml-auto"> <!-- AQUÍ -->
+                        <div class="px-1 flex items-center ml-auto">
                             <button class="flex justify-center items-center rounded-full text-sm h-10 px-3 ns-crud-button border outline-none">
                                 <i class="las la-download"></i>
                                 <span class="ml-1">Descargar</span>
@@ -109,7 +109,14 @@
                             @foreach ($ofertas as $oferta)
                                 <tr class="border text-sm">
                                     <td class="text-center px-2 py-2">
-                                        <div class="w-6 h-6 bg-input-background border-input-edge border-2"></div>
+                                        <div class="w-6 h-6 border-input-edge">
+                                            <input 
+                                            type="checkbox" 
+                                            name="ofertas_seleccionadas[]" 
+                                            value="{{ $oferta->id }}" 
+                                            class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            />
+                                        </div>
                                     </td>
                                     <td class="p-2">{{ $oferta->nombre }}</td>
                                     <td class="p-2">{{ $oferta->tipoOferta ? $oferta->tipoOferta->nombre : 'N/A' }}</td>
