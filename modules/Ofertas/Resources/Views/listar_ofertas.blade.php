@@ -67,12 +67,15 @@
                             <thead>
 
                                 <tr>
-                                    <th class="text-center px-2 border w-16 py-2">
-                                        <div class="flex ns-checkbox cursor-pointer mb-2">
-                                            <div class="w-6 h-6 flex bg-input-background border-input-edge border-2 items-center justify-center cursor-pointer">
-                                            </div>
-                                        </div>
-                                    </th>
+                                <th class="text-center px-2 border w-16 py-2">
+                                    <div class="flex items-center justify-center">
+                                        <input 
+                                            type="checkbox" 
+                                            id="select-all"
+                                            class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                                        >
+                                    </div>
+                                </th>
                                     <th class="cursor-pointer w-40 border text-left px-2 py-2">
                                         <div class="w-full flex justify-between items-center">
                                             <span>Nombre</span>
@@ -121,12 +124,15 @@
                             <tbody>
                                 @foreach ($ofertas as $oferta)
                                     <tr class="ns-table-row border text-sm">
-                                        <th class="text-center px-2 border w-16 py-2">
-                                            <div class="flex ns-checkbox cursor-pointer mb-2">
-                                                <div class="w-6 h-6 flex bg-input-background border-input-edge border-2 items-center justify-center cursor-pointer">
-                                                </div>
-                                            </div>
-                                        </th>
+                                    <th class="text-center px-2 border w-16 py-2">
+                                        <div class="flex items-center justify-center">
+                                            <input 
+                                                type="checkbox" 
+                                                id="select-all"
+                                                class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                                            >
+                                        </div>
+                                    </th>
                                         <td class="font-sans p-2">{{ $oferta->nombre }}</td>
                                         <td class="font-sans p-2">{{ $oferta->tipoOferta ? $oferta->tipoOferta->nombre : 'N/A' }}</td>
                                         <td class="font-sans p-2">{{ number_format($oferta->porcentaje_descuento, 2) }}%</td>
@@ -157,9 +163,9 @@
                                                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     <!-- Opción Editar -->
                                                     <a href="{{ route('ofertas.editar', $oferta->id) }}"
-                                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex items-center space-x-2 transition-colors duration-150 ns-action-button block px-4 py-2.5 hover:bg-gray-50 py-2 leading-5"
+                                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex items-center space-x-2 transition-colors duration-150 ns-action-button block px-4 py-2.5 hover:bg-gray-50 py-2 leading-5 ns-action-button block px-4 py-2 text-sm leading-5"
                                                     target="_self" role="menuitem">
-                                                        <i class="bi bi-pencil text-yellow-500"></i>
+                                                        <i class="mr-2 las la-edit"></i>
                                                         <span>Editar</span>
                                                     </a>
 
@@ -170,7 +176,7 @@
                                                         <button type="submit"
                                                                 class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex items-center space-x-2 transition-colors duration-150 ns-action-button block px-4 py-2.5 hover:bg-gray-50 py-2 leading-5"
                                                                 target="_self" role="menuitem">
-                                                            <i class="bi bi-files text-blue-500"></i>
+                                                            <i class="mr-2 las la-eye"></i>
                                                             <span>Duplicar</span>
                                                         </button>
                                                     </form>
@@ -183,7 +189,7 @@
                                                                 onclick="return confirm('¿Estás seguro de eliminar esta oferta?')"
                                                                 class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 flex items-center space-x-2 transition-colors duration-150 ns-action-button block px-4 py-2.5 hover:bg-gray-50 py-2 leading-5"
                                                                 target="_self" role="menuitem">
-                                                            <i class="bi bi-trash text-red-500"></i>
+                                                            <i class="mr-2 las la-trash"></i>
                                                             <span>Eliminar</span>
                                                         </button>
                                                     </form>
