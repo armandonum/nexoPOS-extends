@@ -8,7 +8,7 @@ use App\Models\Product;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Ofertas\Models\tipo_oferta;
+use Modules\Ofertas\Models\TipoOferta;
 
 
 class Oferta extends Model
@@ -43,7 +43,7 @@ class Oferta extends Model
     //! Relacion con la tabla tipo_ofertas
     public function tipoOferta()
     {
-        return $this->belongsTo(tipo_oferta::class, 'tipo_oferta_id');
+        return $this->belongsTo(TipoOferta::class, 'tipo_oferta_id');
     }
 
     // Agregar este scope
