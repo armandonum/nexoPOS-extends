@@ -234,7 +234,10 @@ class OfertaController extends Controller
             })
             ->get();
 
-        return view('Ofertas::listar_ofertas', compact('ofertas'));
+        return view('Ofertas::listar_ofertas', [
+            'title' => 'Ofertas',
+            'description' => 'Lista de ofertas'
+        ] ,compact('ofertas'));
     }
 
     public function duplicate($id)
@@ -267,5 +270,21 @@ class OfertaController extends Controller
         }
     }
 
+
+    public static function obtenerOfertasActivas() {
+        $ofertas_activas = Oferta::all()->where('estado', true)
+            ->where('fecha_inicio', '<=', now())
+            ->where('fecha_final', '>=', now());
+        if ($ofertas_activas->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No hay ofertas activas en este momento.'
+            ]);
+        }
+        return response()->json([
+            'status' => 'success',
+            'ofertas' => $ofertas_activas
+        ]);
+    }
    
 }
