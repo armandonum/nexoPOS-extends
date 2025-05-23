@@ -9,32 +9,53 @@
             <div class="p-8">
                 <!-- Search Form -->
                  
-                <div class=" w-full md:w-auto -mx-2 mb-2 md:mb-0 flex">
-                      <div class="px-2">
-                        <a href="{{ route('ofertas.crear') }}"
-                           class="rounded-full ns-crud-button text-sm h-10 flex items-center justify-center cursor-pointer px-3 outline-none border">
-                            <i class="las la-plus"></i>
-                        </a>
+                <div id="crud-table-header" class="p-2 border-b flex flex-col md:flex-row justify-between flex-wrap">
+                    <div id="crud-search-box" class="w-full md:w-auto -mx-2 mb-2 md:mb-0 flex">
+                        <div class="px-2 flex items-center justify-center">
+                            <a href="{{ route('ofertas.crear') }}"
+                            class="rounded-full ns-crud-button text-sm h-10 flex items-center justify-center cursor-pointer px-3 outline-none border">
+                                <i class="las la-plus"></i>
+                            </a>
+                        </div>
+                        <div class="px-2">
+                            <div class="rounded-full p-1 ns-crud-input flex">
+                                <form action="{{ route('ofertas.index') }}" method="GET" class="flex-1">
+                                    <div class="bg-gray-200 rounded-full p-1 ns-crud-input flex">
+                                        <input type="text" name="search" value="{{ request('search') }}"
+                                            placeholder="Buscar oferta..."
+                                            class="w-36 md:w-auto bg-transparent outline-none px-2"
+                                            id="search-input">
+                                        <button class="rounded-full w-8 h-8 outline-none ns-crud-input-button">
+                                            <i class="las la-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div>
+                            @if (request('search'))
+                                <a href="{{ route('ofertas.index') }}"
+                                class="px-4 py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-sm font-medium flex items-center space-x-1 transition-all duration-200">
+                                    <i class="bi bi-x-circle"></i>
+                                    <span>Limpiar filtro</span>
+                                </a>
+                            @endif
+                        </div>
+                        <div class="px-2 flex items-center justify-center">
+                            <button class="rounded-full text-sm h-10 px-3 outline-none border ns-crud-button">
+                                <i class="las la-sync"></i>
+                            </button>
+                        </div>
                     </div>
-    <form action="{{ route('ofertas.index') }}" method="GET" class="flex-1">
-        <div class="bg-gray-200 rounded-full p-1 ns-crud-input flex">
-            <input type="text" name="search" value="{{ request('search') }}"
-                   placeholder="Buscar ofertas por nombre..."
-                   class="w-56  bg-transparent outline-none px-2"
-                   id="search-input">
-            <span class="absolute inset-y-0 right-3 flex items-center text-gray-400">
-                <i class="bi bi-search"></i>
-            </span>
-        </div>
-    </form>
-    @if (request('search'))
-        <a href="{{ route('ofertas.index') }}"
-           class="px-4 py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-sm font-medium flex items-center space-x-1 transition-all duration-200">
-            <i class="bi bi-x-circle"></i>
-            <span>Limpiar filtro</span>
-        </a>
-    @endif
-</div>
+                    
+                    <div id="crud-buttons" class="-mx-1 flex flex-wrap w-full md:w-auto">
+                        <div class="px-1 flex items-center">
+                            <button class="flex justify-center items-center rounded-full text-sm h-10 px-3 ns-crud-button border outline-none">
+                                <i class="las la-download"></i>
+                                descargar
+                            </button>
+                        </div>
+                    </div>
 
                 <!-- Flash Messages -->
                 @if (session('success'))
