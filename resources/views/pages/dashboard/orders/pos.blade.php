@@ -7,6 +7,26 @@ use Illuminate\Support\Facades\Gate;
 @section( 'layout.dashboard.header' )
     @parent
     @yield( 'layout.dashboard.header.pos' )
+    <style>
+        .ofertas-activas-brillo {
+            background-color: #fffacd; /* LemonChiffon */
+            border: 1px solid #ffd700; /* Gold */
+            padding: 10px;
+            margin-bottom: 15px; /* Espacio opcional si se muestra encima de otros elementos */
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.7); }
+            100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+        }
+    </style>
 @endsection
 
 @section( 'layout.dashboard.body' )
@@ -18,6 +38,8 @@ use Illuminate\Support\Facades\Gate;
         <img src="{{ asset( 'svg/nexopos-variant-1.svg' ) }}" class="w-32" alt="POS">
         @endif
         <p class="font-semibold py-2">{{ __( 'Loading...' ) }}</p>
+    </div>
+    <div id="disponibles" style="display: none;">
     </div>
     <ns-pos></ns-pos>
 </div>
@@ -60,6 +82,44 @@ use Illuminate\Support\Facades\Gate;
         });
 
         POS.definedPaymentsType( <?php echo json_encode( $paymentTypes );?> );
+
+        const ofertasActivasElement = document.getElementById('disponibles');
+        const urlOfertasActivas = "{{ route('ofertas.activas.json') }}";
+
+        if (ofertasActivasElement) {
+            fetch(urlOfertasActivas)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error(Respuesta de red no fue OK: ${response.statusText}. Mensaje del servidor: ${errData.message || (errData.error || 'No hay mensaje adicional')});
+                        }).catch(() => {
+                            throw new Error(Respuesta de red no fue OK: ${response.statusText}. No se pudo parsear la respuesta de error.);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.status === 'success') { 
+                        ofertasActivasElement.textContent = 'Hay ofertas activas';
+                        ofertasActivasElement.classList.add('ofertas-activas-brillo');
+                        ofertasActivasElement.style.display = 'block'; 
+                    } else {
+
+                        ofertasActivasElement.style.display = 'none'; 
+                        ofertasActivasElement.classList.remove('ofertas-activas-brillo'); 
+                        if (data && data.message) {
+                            console.info('Respuesta del servidor (ofertas): ' + data.message);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener ofertas activas:', error.message);
+                    ofertasActivasElement.style.display = 'none';
+                    ofertasActivasElement.classList.remove('ofertas-activas-brillo');
+                });
+        } else {
+            console.warn('El elemento con ID "disponibles" no fue encontrado en el DOM.');
+        }
     });
 
     /**
