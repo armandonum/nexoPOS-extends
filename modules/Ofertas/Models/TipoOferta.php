@@ -5,7 +5,7 @@ namespace Modules\Ofertas\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class tipo_oferta extends Model
+class TipoOferta extends Model
 {
     /** @use HasFactory<\Database\Factories\TipoOfertaFactory> */
     use HasFactory;

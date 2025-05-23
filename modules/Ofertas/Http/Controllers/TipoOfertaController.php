@@ -9,13 +9,13 @@ namespace Modules\Ofertas\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Ofertas\Models\tipo_oferta;
+use Modules\Ofertas\Models\TipoOferta;
 
 class TipoOfertaController extends Controller
 {
     public static function obtenerTodosTipoOferta()
     {
-        return tipo_oferta::all();
+        return TipoOferta::all();
     }
 
     public static function cargarFormularioTipoOferta()
@@ -33,7 +33,7 @@ class TipoOfertaController extends Controller
             'descripcion' => 'nullable|string|max:255',
         ]);
 
-        $tipoOferta = tipo_oferta::create([
+        $tipoOferta = TipoOferta::create([
             'nombre' => $data['nombre'],
             'descripcion' => $data['descripcion'] ?? null
         ]);
