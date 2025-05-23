@@ -224,14 +224,17 @@ class OfertaController extends Controller
             return back()->with('error', 'Error al eliminar la oferta: ' . $e->getMessage());
         }
     }
-    public function index()
+    public function index(Request $request)
     {
-        $ofertas = Oferta::with(['products', 'tipoOferta'])->get();
-        return view('Ofertas::listar_ofertas', [
-            'title' => 'Listado de Ofertas',
-            'description' => 'Gestiona las ofertas existentes',
-            'ofertas' => $ofertas
-        ]);
+        $search = $request->query('search');
+        
+        $ofertas = Oferta::with('tipoOferta')
+            ->when($search, function ($query, $search) {
+                return $query->where('nombre', 'like', '%' . $search . '%');
+            })
+            ->get();
+
+        return view('Ofertas::listar_ofertas', compact('ofertas'));
     }
 
     public function duplicate($id)
