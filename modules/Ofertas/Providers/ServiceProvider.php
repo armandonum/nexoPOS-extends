@@ -20,7 +20,7 @@ class ServiceProvider extends AppServiceProvider
             $menus = array_insert_before( $menus, 'modules' , [
                 'my-menus' => [
                     'label' =>  __('Ofertas'),
-                    'href' => ns()->url('/dashboard/Ofertas'),
+                    'href' => ns()->url('ofertas_list'),
                
                 ],
                 
