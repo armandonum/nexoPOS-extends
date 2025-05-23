@@ -1,4 +1,3 @@
-
 <?php
 use Illuminate\Support\Facades\Route;
 use Modules\Ofertas\Http\Controllers\OfertaController;
@@ -17,10 +16,11 @@ Route::get('/tipo_ofertas/crear', [TipoOfertaController::class, 'cargarFormulari
 Route::post('/tipo_ofertas', [TipoOfertaController::class, 'almacenarTipoOferta'])->name('tipo_ofertas.store');
 
 
-
+Route::post('/{id}/duplicate', [OfertaController::class, 'duplicate'])->name('ofertas.duplicate');
 
 
 Route::get('/ofertas_list', [OfertaController::class, 'index'])->name('ofertas.index');
+Route::get('api/ofertas/activas_json', [OfertaController::class, 'obtenerOfertasActivas'])->name('ofertas.activas.json');
 Route::put('/ofertas/{id}', [OfertaController::class, 'updateEstate'])->name('ofertas.updateState');
 Route::put('/dashboard/Ofertas/{id}', [OfertaController::class, 'update'])->name('ofertas.update');
 

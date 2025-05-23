@@ -5,17 +5,29 @@
 
     <div class="container mx-auto px-4 py-10">
         <div class="bg-white shadow-2xl rounded-2xl overflow-hidden transition-all duration-300">
-            <!-- <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-6 flex justify-between items-center">
-                <h3 class="text-2xl font-bold tracking-tight">Listado de Ofertas</h3>
-                <a href="{{ route('ofertas.crear') }}"
-                   class="bg-white text-blue-700 hover:bg-blue-100 px-5 py-2.5 rounded-xl font-semibold flex items-center space-x-2 transition-all duration-200 hover:shadow-md">
-                    <i class="bi bi-plus-circle text-lg"></i>
-                    <span>Crear Nueva Oferta</span>
-                </a>
-            </div> -->
-
-            <!-- Body -->
             <div class="p-8">
+                <!-- Search Form -->
+                <div class=" w-full md:w-auto -mx-2 mb-2 md:mb-0 flex">
+    <form action="{{ route('ofertas.index') }}" method="GET" class="flex-1">
+        <div class="bg-gray-200 rounded-full p-1 ns-crud-input flex">
+            <input type="text" name="search" value="{{ request('search') }}"
+                   placeholder="Buscar ofertas por nombre..."
+                   class="w-56  bg-transparent outline-none px-2"
+                   id="search-input">
+            <span class="absolute inset-y-0 right-3 flex items-center text-gray-400">
+                <i class="bi bi-search"></i>
+            </span>
+        </div>
+    </form>
+    @if (request('search'))
+        <a href="{{ route('ofertas.index') }}"
+           class="px-4 py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-sm font-medium flex items-center space-x-1 transition-all duration-200">
+            <i class="bi bi-x-circle"></i>
+            <span>Limpiar filtro</span>
+        </a>
+    @endif
+</div>
+
                 <!-- Flash Messages -->
                 @if (session('success'))
                     <div class="bg-green-50 text-green-800 px-6 py-4 rounded-lg mb-6 flex items-center space-x-3 animate-fade-in">
@@ -34,13 +46,15 @@
                 @if ($ofertas->isEmpty())
                     <div class="text-center py-12">
                         <i class="bi bi-tags text-gray-400 text-6xl mb-4"></i>
-                        <p class="text-gray-500 text-lg">No hay ofertas registradas.</p>
+                        <p class="text-gray-500 text-lg">
+                            {{ request('search') ? 'No se encontraron ofertas para la búsqueda.' : 'No hay ofertas registradas.' }}
+                        </p>
                         <a href="{{ route('ofertas.crear') }}"
                            class="mt-4 inline-block text-blue-600 hover:text-blue-800 font-medium underline">Crea tu primera oferta</a>
                     </div>
                 @else
                     <div class="overflow-x-auto">
-                        <table class="min-w-full table-auto text-left text-sm">
+                        <table class="min-w-full table-auto text-left text-sm" id="ofertas-table">
                             <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-semibold tracking-wider">
                                 <tr>
                                     <th class="px-6 py-4">Nombre</th>
@@ -52,9 +66,10 @@
                                     <th class="px-6 py-4">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-gray-100" id="ofertas-body">
                                 @foreach ($ofertas as $oferta)
-                                    <tr class="hover:bg-blue-50 transition-all duration-150">
+                                    <tr class="hover:bg-blue-50 transition-all duration-150 oferta-row" 
+                                        data-name="{{ strtolower($oferta->nombre) }}">
                                         <td class="px-6 py-4 font-medium text-gray-800">{{ $oferta->nombre }}</td>
                                         <td class="px-6 py-4 text-gray-600">
                                             {{ $oferta->tipoOferta ? $oferta->tipoOferta->nombre : 'N/A' }}
@@ -83,6 +98,17 @@
                                                 <i class="bi bi-pencil"></i>
                                                 <span>Editar</span>
                                             </a>
+
+                                            <!-- Boton duplicar oferta -->
+                                            <form action="{{ route('ofertas.duplicate', $oferta->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="px-4 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 rounded-full text-sm font-medium flex items-center space-x-1 transition-all duration-200">
+                                                    <i class="bi bi-files"></i>
+                                                    <span>Duplicar</span>
+                                                </button>
+                                            </form>
+
+                                            <!-- Boton eliminar oferta -->
                                             <form action="{{ route('ofertas.destroy', $oferta->id) }}" method="POST"
                                                   onsubmit="return confirm('¿Estás seguro de eliminar esta oferta?')"
                                                   class="inline">
@@ -100,13 +126,11 @@
                             </tbody>
                         </table>
                     </div>
-                   
                 @endif
             </div>
         </div>
     </div>
 
-    <!-- Custom Animation Styles -->
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -116,4 +140,16 @@
             animation: fadeIn 0.5s ease-out;
         }
     </style>
+
+    <script>
+        document.getElementById('search-input').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.oferta-row');
+
+            rows.forEach(row => {
+                const name = row.dataset.name;
+                row.style.display = name.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    </script>
 @endsection

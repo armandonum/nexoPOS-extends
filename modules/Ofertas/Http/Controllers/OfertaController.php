@@ -224,15 +224,67 @@ class OfertaController extends Controller
             return back()->with('error', 'Error al eliminar la oferta: ' . $e->getMessage());
         }
     }
-    public function index()
+    public function index(Request $request)
     {
-        $ofertas = Oferta::with(['products', 'tipoOferta'])->get();
+        $search = $request->query('search');
+        
+        $ofertas = Oferta::with('tipoOferta')
+            ->when($search, function ($query, $search) {
+                return $query->where('nombre', 'like', '%' . $search . '%');
+            })
+            ->get();
+
         return view('Ofertas::listar_ofertas', [
-            'title' => 'Listado de Ofertas',
-            'description' => 'Gestiona las ofertas existentes',
-            'ofertas' => $ofertas
-        ]);
+            'title' => 'Ofertas',
+            'description' => 'Lista de ofertas'
+        ] ,compact('ofertas'));
     }
 
+    public function duplicate($id)
+    {
+        try {
+            //oferta actual
+            $ofertaOriginal = Oferta::with(['products', 'tipoOferta'])->findOrFail($id);
+            
+            //duplicar
+            $nuevaOferta = $ofertaOriginal->replicate();
+            $nuevaOferta->nombre = "Copia de " . $ofertaOriginal->nombre;
+            $nuevaOferta->estado = false;
+            $nuevaOferta->created_at = now();
+            $nuevaOferta->updated_at = now();
+            
+            //guardar nueva oferta
+            $nuevaOferta->save();
+            $productosIds = $ofertaOriginal->products->pluck('id')->toArray();
+            $nuevaOferta->products()->sync($productosIds);
+
+            return redirect()->route('ofertas.index')
+                ->with('success', 'Oferta duplicada correctamente. La nueva oferta está inactiva.');
+
+        } catch (\Exception $e) {
+            Log::error('Error al duplicar oferta ID ' . $id . ': ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+            
+            return redirect()->route('ofertas.index')
+                ->with('error', 'Error al duplicar la oferta: ' . $e->getMessage());
+        }
+    }
+
+
+    public static function obtenerOfertasActivas() {
+        $ofertas_activas = Oferta::all()->where('estado', true)
+            ->where('fecha_inicio', '<=', now())
+            ->where('fecha_final', '>=', now());
+        if ($ofertas_activas->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No hay ofertas activas en este momento.'
+            ]);
+        }
+        return response()->json([
+            'status' => 'success',
+            'ofertas' => $ofertas_activas
+        ]);
+    }
    
 }
